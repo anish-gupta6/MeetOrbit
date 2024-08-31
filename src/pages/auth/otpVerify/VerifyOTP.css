@@ -1,0 +1,83 @@
+.otp-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    /* height: 100px; */
+    padding: 20px 12px;
+    gap: 15px;
+    text-align: center;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+  }
+  .otp-heading , .otp-cntnr-desc strong{
+    color: #0e6cde;
+  }
+  .otp-cntnr-desc{
+    font-size: 12px;
+  }
+  .otp-box-cntnr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+
+  }
+  
+  .otp-input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .otp-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  .otp-submit-btn{
+    border: none;
+    outline: none;
+    background-color: #0e72ed;
+    color: white;
+    font-size: 16px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border-radius: 6px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  .close-btn{
+    font-size: 22px;
+    color: tomato;
+    margin-left: 85%;
+    cursor: pointer;
+  }
+  
+.verify-loader {
+  width: 22px;
+  padding: 3px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: white;
+  --_m: 
+    conic-gradient(#0000 10%,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {to{transform: rotate(1turn)}}

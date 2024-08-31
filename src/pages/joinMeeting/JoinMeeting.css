@@ -1,0 +1,62 @@
+
+.meeting-join-form-cntnr{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 150px;
+    gap: 50px;
+}
+.join-meeting-heading-cntnr{
+    font-size: 26px;
+    font-weight: bold;
+ }
+.join-meeting-form-cntnr{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 350px;
+}
+.join-input-label-cntnr{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.join-meeting-label{
+    font-size: 12px;
+    color: #666;
+}
+.join-meeting-input{
+    height: 40px;
+    border-radius: 10px;
+    outline: none;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    padding: 2px 12px;
+    font-size: 16px;
+    transition: border 0.25s ease-in-out;
+}
+.join-meeting-input:focus{
+    border: 2px solid #0e72ed;
+}
+.join-form-desc{
+    font-size: 14px;
+    text-align: justify;
+}
+.join-form-submit-btn{
+    height: 40px;
+    border: none;
+    background-color: rgba(82, 82, 128, 0.09);
+    color: #555;
+    font-size: 20px;
+    border-radius: 10px;
+}
+.join-form-submit-btn.active{
+    background-color: #0e72ed;
+    color: white;
+}
+.join-form-links{
+    text-decoration: none;
+    color: #0e72ed;
+}
+.join-form-links:hover{
+    text-decoration: underline;
+}

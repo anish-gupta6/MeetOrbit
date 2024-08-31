@@ -1,0 +1,97 @@
+.participantbox-main-container{
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    height: 85vh;
+    background-color: white;
+    /* border-radius: 12px; */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    
+}
+.participantbox-top-nav{
+    height: 8%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-between; */
+    padding: 0 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 1;
+    box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+}
+.participantbox-nav-title{
+    color: black;
+    font-weight: 600;
+    font-size: 16px;
+    user-select: none;
+    margin-left: 120px;
+}
+.participantbox-close-btn{
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 35px;
+    margin-left: auto;
+}
+.participantbox-close-btn:hover{
+    color: red;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+.participantbox-main-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 92%;
+    background-color: white;
+    padding: 15px 15px 10px 12px;
+    
+    overflow-y: scroll;
+}
+.participant-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-bottom: 8px;
+    border-bottom: 1px solid whitesmoke;
+}
+.participant-details{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+.participant-profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    background-color: #03fc5e;
+    color: white;
+}
+.participant-name{
+    color: rgba(0, 0, 0, 0.6);
+}
+.participant-media-status,.media-status{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+.media-status{
+    font-size: 20px;
+    color: rgba(251, 128, 107, 0.862);
+    cursor: pointer;
+}
