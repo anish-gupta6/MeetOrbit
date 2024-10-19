@@ -1,21 +1,24 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const MidNavbar = () => {
     const midNavStyle={
       position:'fixed',
       top:'0',
-      padding:'0 20px 0 70px',
       width:'100%',
       backgroundColor:'white',
-      boxShadow:'0 8px 16px 0 rgba(0,0,0,0.1)',
+      boxShadow:'rgba(50, 50, 93, 0.04) 0px 6px 12px -2px, rgba(0, 0, 0, 0.08) 0px 3px 7px -3px',
       userSelect:'none',
-      zIndex:'1'
+      zIndex:'1',
+      lineHeight: '80px',
+      padding:'13px 30px'
   }
+  // box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   return (
     <div>
     <div style={midNavStyle}>
-      <Link to='/' style={{display:'flex',alignItems:'center',padding:'16px 0'}}><img src="https://us05st2.zoom.us/static/6.3.24306/image/new/topNav/Zoom_logo.svg" alt="" /></Link>
+      <Link to='/' style={{display:'flex',alignItems:'center'}}><img src={Logo} alt="" className='upper-nav-logo'/></Link>
       </div>
     </div>
   )

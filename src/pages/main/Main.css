@@ -9,7 +9,8 @@
     flex-direction: row;
     /* justify-content: center; */
     align-items: center;
-    width: 80%;
+    flex-wrap: wrap-reverse;
+    width: 90%;
     height: 100vh;
     padding: 20px;
     margin-left: auto;
@@ -25,20 +26,22 @@
 }
 
 .text-section h1 {
-    font-size: 48px;
+    /* font-size: 48px; */
+    font-size:  clamp(1.5rem, 3.2vw, 4rem);
     line-height: 1.2;
     color: #333;
 }
 
 .text-section p {
-    font-size: 16px;
+    /* font-size: 16px; */
+    font-size:  clamp(0.8rem, 1.1vw, 2.5rem);
     line-height: 1.6;
     color: #777;
     margin: 20px 0;
 }
 
 .text-section .highlight {
-    color: #0e72ed;
+    color: var(--primary_color);
     font-weight: bold;
 }
 
@@ -57,7 +60,7 @@
 }
 
 .btn-primary {
-    background-color: #0e72ed;
+    background-color: var(--primary_color);
     color: #ffffff;
 }
 
@@ -67,8 +70,8 @@
 
 .btn-secondary {
     background-color: transparent;
-    color: #0e72ed;
-    border: 2px solid #0e72ed;
+    color: var(--primary_color);
+    border: 2px solid var(--primary_color);
 }
 
 .btn-secondary:hover {
@@ -76,5 +79,18 @@
 }
 
 .image-section {
+    min-width: 320px;
+    /* max-width: 500px; */
     flex: 1;
+}
+
+
+@media screen and (max-width:540px) {
+    .landing-container {
+        width: 98%;
+        margin-top: 60px;
+    }
+    .text-section p {
+        margin: 10px 0 20px 0;
+    }
 }

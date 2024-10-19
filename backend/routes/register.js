@@ -1,16 +1,12 @@
 const express = require('express');
 const {User,MeetingDetails} = require('../models/User');
-// const MeetingDetails = require('../models/MeetingDetails');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const CryptoJS = require('crypto-js');
 
 const router = express.Router();
-
-// const encryptPassword = async (value) =>{
-//     const salt = 10;
-//     const encryptedPassword = await bcrypt.hash(value, salt);
-//     return encryptedPassword;
-// }
+const salt = 10;
+const secretKey = 'zoomClone'
 
 
 const generateRandomString = (length) => {
@@ -33,6 +29,15 @@ const generateRandomString = (length) => {
     return meetingId;
   }
 
+  const getRandomColor = () =>{
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
 router.post('/register', async (req, res) => {
     const { userName,userEmail,userPassword,profileImg,isGoogleRegister} = req.body;
 
@@ -41,18 +46,20 @@ router.post('/register', async (req, res) => {
         if (user) {
             return res.status(400).json({ msg: 'User already exists' });
         }
-        // let user;
         const randomString = generateRandomString(8); 
-        const userId = `${userName.toLowerCase().replace(/\s/g, '_')}@${randomString}`;
+        const userId = `${userName.toLowerCase().replace(/\s/g, '_')}_${randomString}`;
         const meetingId = generateMeetingId();
         console.log(meetingId)
         const meetingPassword = generateRandomString(6); 
-        const salt = 10;
-        const hashedMeetingPassword = await bcrypt.hash(meetingPassword, salt);
-        const meetingLink = `http://localhost:3000/j/${meetingId}?pwd=${hashedMeetingPassword}`
         
+        // const hashedMeetingPassword = await bcrypt.hash(meetingPassword, salt);
+        const hashedMeetingPassword = CryptoJS.AES.encrypt(meetingPassword, secretKey).toString();
+        const colorId = getRandomColor();
+        const meetingLink = `http://localhost:3000/meeting/room/s?id=${meetingId}?pwd=${encodeURIComponent(hashedMeetingPassword)}`
+        
+        // const googleId = await bcrypt.hash(userPassword, salt);
+        const googleId = CryptoJS.AES.encrypt(userPassword, secretKey).toString();
        if(isGoogleRegister){
-        const googleId = await bcrypt.hash(userPassword, salt);
             
             user = new User({
                 googleId,
@@ -61,27 +68,31 @@ router.post('/register', async (req, res) => {
                 userEmail,
                 userPassword:'',
                 profileImg,
+                colorId
             });
-            // console.log('123')
        }
        else{
-            // const googleId = '';
             user = new User({
                 googleId:'',
                 userId,
                 userName,
                 userEmail,
-                userPassword:await bcrypt.hash(userPassword, salt),
+                userPassword:googleId,
                 profileImg,
+                colorId
             });
        }
         
 
         const meeting= new MeetingDetails({
             userId,
+            meetingName:userName,
             meetingId,
             meetingPassword,
             meetingLink,
+            meetingRecordings:[],
+            recentMeetings:[],
+            scheduledMeetings:[]
         })
         console.log(userId,
             userName,

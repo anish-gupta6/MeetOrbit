@@ -25,7 +25,7 @@ const AuthContext = ({children}) => {
 
 
     // for user login and saving data to the local storage
-    const userLogin = async (userEmail,userPassword,isGoogleLogin)=>{
+    const userLogin = async (userEmail,userPassword,profileImg,isGoogleLogin)=>{
         try{
             console.log('here')
             const response = await fetch('http://localhost:5000/api/auth/login',{
@@ -33,15 +33,15 @@ const AuthContext = ({children}) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userEmail,userPassword,isGoogleLogin})
+                body: JSON.stringify({userEmail,userPassword,profileImg,isGoogleLogin})
             });
             const data = await response.json();
             if(response.ok){
-                if(data.success){
+                // if(data.success){
                     saveUserData(data.userData);
-                    navigate('/dashboard');
+                    navigate('/home');
                     return {message:data.message,success:data.success}
-                }
+                // }
             }
             return {message:data.message,success:data.success}
 
@@ -63,7 +63,7 @@ const AuthContext = ({children}) => {
             if(response.ok){
                 
                 const data = await response.json();
-                isGoogleRegister?userLogin(userEmail,userPassword,isGoogleRegister):userLogin(userEmail,userPassword);
+                userLogin(userEmail,userPassword,profileImg,isGoogleRegister);
                 return data.message;
             }
         }catch(err){
@@ -94,33 +94,8 @@ const AuthContext = ({children}) => {
         }
     }
 
-    // login with google
-    const handleGoogleSignIn = useGoogleLogin({
-        onSuccess: async (codeResponse) =>{
-          try{
-            const response=await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse.access_token}`,{
-              method:'GET',
-              mode:'cors',
-              headers: {
-                Authorization: `Bearer ${codeResponse.access_token}`,
-                Accept: 'application/json'
-                }
-            });
-            if(response.ok){
-                const userInfo = await response.json();
-                const isGoogleLogin = true;
-                userLogin(userInfo.email,userInfo.id,isGoogleLogin);
-              }
-          }
-          catch(error){
-            console.log(error);
-          }
-        },
-        onError: (error) => console.log('Login Failed:', error)
-    });
-
     // signup with google
-    const handleGoogleSignUp = useGoogleLogin({
+    const handleGoogleAuth = useGoogleLogin({
         onSuccess: async (codeResponse) =>{
           try{
             const response=await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse.access_token}`,{
@@ -135,15 +110,13 @@ const AuthContext = ({children}) => {
               const userInfo = await response.json();
               console.log(userInfo)
               const result = await checkUser(userInfo.email)
-            //   console.log(result)
               if(result===true){
                 const isGoogleLogin = true;
                 console.log('login')
-                userLogin(userInfo.email,userInfo.id,isGoogleLogin);
+                userLogin(userInfo.email,userInfo.id,userInfo.picture,isGoogleLogin);
               }
               else{
                 console.log('register')
-                // setProfileImg(userInfo.picture)
                 const isGoogleRegister = true;
                 userRegister(userInfo.name,userInfo.email,userInfo.id,userInfo.picture,isGoogleRegister);
               }
@@ -176,9 +149,27 @@ const AuthContext = ({children}) => {
             console.log(err);
         }
     }
+    const resetPassword = async (userEmail,userPassword) =>{
+        try{
+            const response = await fetch('http://localhost:5000/api/auth/resetPassword',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userEmail,userPassword})
+            });
+            const data = await response.json();
+            if(response.ok){
+                return data
+            }
+            return data
+        }catch(err){
+            console.log(err);
+        }
+    }
 
   return (
-    <UserContext.Provider value={{ generateOTP , userLogin, userRegister ,handleGoogleSignUp, handleGoogleSignIn, checkUser, userLogOut}}>
+    <UserContext.Provider value={{ generateOTP , userLogin, userRegister ,handleGoogleAuth, checkUser, userLogOut, resetPassword}}>
             {children}
         </UserContext.Provider>
   )

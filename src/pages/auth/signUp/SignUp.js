@@ -2,19 +2,15 @@ import React,{useState} from 'react';
 import '../signIn/SignIn.css';
 import {Link,useNavigate} from 'react-router-dom'
 import GoogleIcon from '../../../assets/GoogleIcon.png'
-// import MicrosoftIcon from '../../../assets/icons/MicrosoftIcon.png'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEye,faEyeSlash } from '@fortawesome/free-regular-svg-icons'
-// import VerifyEmailPopUp from '../../infoComponents/verifyEmailPopUp/VerifyEmailPopUp';
-import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import {UserAuth} from '../../../components/contexts/AuthContext';
 import MidNavbar from '../../midNav/MidNavbar';
 import {ReactComponent as SignUpSVG} from '../../../assets/signUp-svg.svg'
 import VerifyOTP from '../otpVerify/VerifyOTP';
+import {useToast} from '../../../ToastService'
 
-const SignUp = ({onLogIn}) => {
-  const navigate=useNavigate();
-  // const authService=AuthService();
+const SignUp = () => {
     const [isEmailActive, setIsEmailActive] = useState(false);
     const [isNewPassActive, setIsNewPassActive] = useState(false);
     const [isConfirmPassActive, setIsConfirmPassActive] = useState(false);
@@ -29,14 +25,15 @@ const SignUp = ({onLogIn}) => {
     const [nameValue, setnameValue] = useState('');
     const [newPassValue, setNewPassValue] = useState('');
     const [confirmPassValue, setConfirmPassValue] = useState('');
-    const [formError, setFormError] = useState('');
-    const [isFormMsg, setIsFormMsg] = useState(false);
+    // const [formError, setFormError] = useState('');
+    // const [isFormMsg, setIsFormMsg] = useState(false);
     const [isPopUpActive,setIsPopUpActive]=useState(false)
     const [isLoaderActive,setIsLoaderActive]=useState(false)
     const [generatedOTP,setGeneratedOTP]=useState('')
     
     // const [userId,setUserId]=useState('')
-    const {generateOTP,handleGoogleSignUp}=UserAuth();
+    const {generateOTP,handleGoogleAuth}=UserAuth();
+    const {notifySuccess,notifyError,notifyWarning} = useToast();
 
 
     function handleEmailChange(text) {
@@ -66,42 +63,60 @@ const SignUp = ({onLogIn}) => {
         setConfirmPassValue(pass);
         setIsConfirmPassActive(pass !== ''?true:false);
       }
+      function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    }
       
       
       const handleSubmit = async (event) => {
         event.preventDefault();
         const userName= nameValue;
         const userEmail= emailValue;
-          setIsFormMsg(false);
+
+        if(!userName && !userEmail && !newPassValue){
+          notifyWarning('Enter your details to continue !!');
+          return
+        }
+
+        if(!userName){
+          notifyWarning('Enter your name !!');
+          return
+        }
+        if(!userEmail){
+          notifyWarning('Enter your email !!');
+          return
+        }
+        if(!newPassValue || !confirmPassValue){
+          notifyWarning('Create a password !!');
+          return
+        }
+        if(!validateEmail(userEmail)){
+          notifyError('Enter a valid email !!');
+          return
+        }
+        if(newPassValue.length<8 || confirmPassValue.length<8){
+          notifyWarning('Password must be at least 8 characters long !!');
+          return
+        }
         
           if(newPassValue!==confirmPassValue){
-            setFormError("Password doesn't match !!");
+            notifyError("Passwords doesn't match !!!");
           }
           else{
-            setFormError("");
             setIsLoaderActive(true)
             const {otp,message,success} = await generateOTP(userName, userEmail);
             if(success){
               setGeneratedOTP(otp);
-              setFormError('OTP sent successfully !!');
-              setIsFormMsg(true);
+              notifySuccess(message);
               setIsLoaderActive(false)
               setIsPopUpActive(true);
             }
+            else{
             setIsLoaderActive(false)
-            setIsFormMsg(false);
-            setFormError(message);
+            notifyError(message);
           }
-          if(formError!==""){
-          setTimeout(() => {
-            setFormError("");
-         }, 5000);
-        }
-        else{
-          setTimeout(() => {
-            setFormError("");
-          }, 5000);
-        }
+          }
       };
       
       const handlePopUpChange = (value)=>{
@@ -109,7 +124,7 @@ const SignUp = ({onLogIn}) => {
       }
   return (
     <div >
-      <div className={`verify-email-popup ${isPopUpActive===true?'active':''}`}> <div className="popup-inner"> <VerifyOTP handlePopUpChange={handlePopUpChange} generatedOTP={generatedOTP} userName={nameValue} userEmail={emailValue} userPassword={newPassValue}/></div></div>
+      <div className={`verify-email-popup ${isPopUpActive===true?'active':''}`}> <div className="popup-inner"> <VerifyOTP handlePopUpChange={handlePopUpChange} generatedOTP={generatedOTP} userName={nameValue} userEmail={emailValue} userPassword={newPassValue} isPopUpActive={isPopUpActive}/></div></div>
       <div className={`verify-email-loader ${isLoaderActive===true?'active':''}`}> <div className="loader"></div></div>
       <section style={{height:'100vh',width:'100vw',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',zIndex:'-10'}}>
       <div className="midnav" style={{width:'100%'}}><MidNavbar/></div>
@@ -125,21 +140,21 @@ const SignUp = ({onLogIn}) => {
             <div className="input-field-cntnr">
                 <div className="inp-cntnr">
                 <input type="text" id="name" name="name" autoComplete='off' className="login-page-input-field name-field" value={nameValue}
-                    onChange={(e) => handleNameChange(e.target.value)} required/>
+                    onChange={(e) => handleNameChange(e.target.value)}/>
                 <label htmlFor="name" className={`login-input-label login-page-name-label ${isNameActive ? 'Active' : ''}`}>Full Name</label>
                 </div>
             </div>
                 <div className="input-field-cntnr">
                 <div className="inp-cntnr">
-                <input type="email" id="email" name="email" autoComplete='off' className="login-page-input-field email-field" value={emailValue}
-                    onChange={(e) => handleEmailChange(e.target.value)} required/>
+                <input type="text" id="email" name="email" autoComplete='off' className="login-page-input-field email-field" value={emailValue}
+                    onChange={(e) => handleEmailChange(e.target.value)}/>
                 <label htmlFor="email" className={`login-input-label login-page-email-label ${isEmailActive ? 'Active' : ''}`}>Email address</label>
               </div>
             </div>
             <div className="input-field-cntnr pass-cntnr">
               <div className="inp-cntnr">
                 <input type={newInputType} id="password" name="password" className="login-page-input-field pass-field" value={newPassValue}
-                    onChange={(e) => handleNewPasswordChange(e.target.value)}  required/>
+                    onChange={(e) => handleNewPasswordChange(e.target.value)} />
                     
                 <label htmlFor="password" className={`login-input-label login-page-password-label ${isNewPassActive ? 'Active' : ''}`}>Create New Password</label>
               </div>
@@ -149,7 +164,7 @@ const SignUp = ({onLogIn}) => {
             <div className="input-field-cntnr pass-cntnr">
               <div className="inp-cntnr">
                 <input type={confirmInputType} id="password" name="password" className="login-page-input-field pass-field" value={confirmPassValue}
-                    onChange={(e) => handleConfirmPasswordChange(e.target.value)}  required/>
+                    onChange={(e) => handleConfirmPasswordChange(e.target.value)} />
                     
                 <label htmlFor="password" className={`login-input-label login-page-password-label ${isConfirmPassActive ? 'Active' : ''}`}>Confirm New Password</label>
               </div>
@@ -158,13 +173,13 @@ const SignUp = ({onLogIn}) => {
 
 
 
-                <div className={`form-error-cntnr ${isFormMsg?'Active':''}`}>{formError}</div>
+                {/* <div className={`form-error-cntnr ${isFormMsg?'Active':''}`}>{formError}</div> */}
               <button type="submit" className="login-page-submit-btn">Register</button>
               
             </form>
             <p>Already have an account? <Link to="/signin" className='signUp'>Sign In</Link></p>
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100%',marginTop:'10px'}}> <div className="line" ></div> <span style={{margin:'0 10px'}}>OR</span><div className="line"></div></div>
-            <button className="social-button" id="google-button" onClick={handleGoogleSignUp}><img src={GoogleIcon} width={20} height={20} alt='G'/>Continue with Google</button>
+            <button className="social-button" id="google-button" onClick={handleGoogleAuth}><img src={GoogleIcon} width={20} height={20} alt='G'/>Continue with Google</button>
       </div>
       </div>
     </div>

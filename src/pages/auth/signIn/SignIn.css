@@ -29,7 +29,7 @@
     font-size: 26px;
     margin-top: 20px;
     color: #0668df;
-    /* border-bottom: 3px dashed #0e72ed; */
+    /* border-bottom: 3px dashed var(--primary_color); */
   }
   .pass-cntnr{
     display: flex;
@@ -50,7 +50,7 @@
     border-radius: 6px;
   }
   /* .login-page-input-field:focus{
-    border: 1px solid #0e72ed;
+    border: 1px solid var(--primary_color);
   } */
   .email-field,.name-field{
     margin-bottom: 10px;
@@ -61,13 +61,13 @@
   }
   
   /* .pass-field:focus + .pass-cntnr{
-    border: 1px solid #0e72ed;
+    border: 1px solid var(--primary_color);
   } */
   
   .login-page-submit-btn{
     width: 100%;
     padding: 10px;
-    background-color: #0e72ed;
+    background-color: var(--primary_color);
     color: white;
     border: none;
     border-radius: 6px;
@@ -180,7 +180,7 @@
   .forgot-pass-link{
     margin-top: 5px;
     text-decoration: none;
-    color: #0e72ed;
+    color: var(--primary_color);
     font-size: 12px;
     display: flex;
     flex-direction: row;
@@ -226,7 +226,7 @@
     margin-top: 30px;
     cursor: pointer;
     user-select: none;
-    color: #0e72ed;
+    color: var(--primary_color);
   }
 .verify-email-popup, .verify-email-loader{
   width: 100%;
@@ -252,7 +252,7 @@
   aspect-ratio: 1;
   border-radius: 50%;
   border: 8px solid white;
-  border-right-color: #0e72ed;
+  border-right-color: var(--primary_color);
   animation: l2 1s infinite linear;
 }
 @keyframes l2 {to{transform: rotate(1turn)}}

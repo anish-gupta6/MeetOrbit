@@ -6,17 +6,39 @@
     background-color: white;
     /* height: 100px; */
     padding: 20px 12px;
-    gap: 15px;
+    gap: 10px;
     text-align: center;
     width: 350px;
     border-radius: 10px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    user-select: none;
+  }
+  .otp-logo-cntnr{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    height: 50px;
+    width: 50px;
+    background-color: var(--primary_color);
+    color: white;
+    border-radius: 50%;
   }
   .otp-heading , .otp-cntnr-desc strong{
     color: #0e6cde;
   }
   .otp-cntnr-desc{
     font-size: 12px;
+  }
+  .otp-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .otp-form-buttons{
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
   }
   .otp-box-cntnr{
     display: flex;
@@ -43,26 +65,38 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 
-  .otp-submit-btn{
+  .otp-submit-btn, .otp-resend-btn{
     border: none;
     outline: none;
-    background-color: #0e72ed;
-    color: white;
-    font-size: 16px;
-    width: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
     border-radius: 6px;
     margin-top: 10px;
     cursor: pointer;
+    width: 100px;
+  }
+  .otp-submit-btn{
+    background-color: var(--primary_color);
+    color: white;
+    font-size: 16px;
+    padding: 10px 24px;
+  }
+  .otp-resend-btn{
+    background-color: white;
+    border: 1px solid var(--primary_color);
+    padding: 5px 12px;
+    color:  var(--primary_color);
   }
   .close-btn{
     font-size: 22px;
-    color: tomato;
+    color: rgba(0, 0, 0, 0.2);
     margin-left: 85%;
     cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .close-btn:hover{
+    color: red;
   }
   
 .verify-loader {

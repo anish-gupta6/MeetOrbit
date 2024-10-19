@@ -1,333 +1,103 @@
-import React, { useEffect, useState } from 'react'
-import {useParams,Link,useNavigate} from 'react-router-dom'
-import './UserProfile.css'
-import {PiAddressBookFill, PiCaretRightBold, PiEnvelopeBold, PiGraduationCapFill, PiPhoneFill, PiPlusBold } from 'react-icons/pi'
-import { MdContacts } from "react-icons/md";
-import {FaEllipsisH, FaEnvelope, FaGraduationCap, FaPhoneAlt, FaUniversity } from 'react-icons/fa'
-import { FaLocationDot } from "react-icons/fa6";
-import UserPosts from '../userPosts/UserPosts'
-import UserFollowers from '../userFollowers/UserFollowers'
-import UserFollowings from '../userFollowing/UserFollowings'
-import follower from '../../../assets/dummyJSON/FollowersData.json'
-import FollowService from '../../auth/followService/FollowService.js'
-import FollowerService from '../../auth/getFollowerDataService/FetchFollowerService.js'
-import FollowingService from '../../auth/getFollowingDataService/FetchFollowingService.js'
-// import selfFollowingService from '../../auth/loggedUserService/LoggedUserService.js'
-import UserProfileSkeleton from '../userProfileAnimation/UserProfileSkeleton.js'
+import React, { useEffect, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import "./UserProfile.css";
+import {ReactComponent as DisclaimerSVG} from '../../assets/user-disclaimer-svg.svg'
+import {ReactComponent as StarSVG} from '../../assets/star-ai-svg.svg'
+import { PiNotePencilBold, PiPencilSimpleLine, PiXBold } from "react-icons/pi";
+import User from '../../assets/profile-circle.png'
 
 const UserProfile = () => {
-  // const navigate=useNavigate();
-  const navigate = useNavigate();
-  const followService=FollowService();
-  const followerService=FollowerService();
-  const followingService=FollowingService();
-  // const fetchSelfFollowing=selfFollowingService();
-  const [activeTab,setActiveTab]=useState('posts');
-  // const [userData,setUserData]=useState('');
-  const {userId}=useParams();
-  const [user, setUser] = useState({});
-  // const usrId=currentUser.currentUser;
-  
-  const [usrId,setUsrId]=useState('')
-  // const [followerId,setFollowerId]=useState('')
-  const [usrName,setUsrName]=useState('')
-  const [usrEmail,setUsrEmail]=useState('')
-  const [followerCount,setFollowerCount]=useState()
-  const [followingCount,setFollowingCount]=useState()
-  const [followingData,setFollowingData]=useState([])
-  const [selfFollowingData,setSelfFollowingData]=useState([])
-  const [selfFollowerData,setSelfFollowerData]=useState([])
-  const [followerData,setFollowerData]=useState([])
-  const [followButtonValue,setFollowButtonValue]=useState('')
-  const [selfProfile,setselfProfile]=useState(false)
-  const [loading, setLoading] = useState(true);
-  const firstFollowerData=followerData.slice(0,5);
-  const [isMoreInfoOpen, setIsMoreInfoOpen] = useState(false);
-
-  const [userUploads,setUserUploads]=useState([])
-  const [userFiles,setUserFiles]=useState([])
-  const data={
-    phone:null,
-    studyYear:null
-  }
-
+  const [isNotificationActive,setIsNotificationActive] = useState(true);
   useEffect(()=>{
-    const fetchData = async () => {
-      try {
-          const userData = JSON.parse(localStorage.getItem('activeUser'));
-          const isLogged = JSON.parse(localStorage.getItem('isLoggedIn'));
-          if (userData !== null && isLogged !== null) {
-              setUsrId(userData.userId);
-              setUsrName(userData.userName);
-              setUsrEmail(userData.userEmail);
-          }
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
-  
-  fetchData();
-
-  },[]);
-
-
-  const handleFollowUnfollow= async ()=>{
-    if(followButtonValue==='Follow' || followButtonValue==='Follow Back'){
-    const response= await followService.followUser(usrId,userId);
-    console.log(response)
+    if(!isNotificationActive){
+      setTimeout(()=>{
+        setIsNotificationActive((prev)=>!prev);
+      },0.5*60*1000)
     }
-    else{
-      const response= await followService.unFollowUser(usrId,userId);
-      console.log(response)
-    }
-  }
-  
-  const handleTabSwitch=(value)=>{
-    setActiveTab(value);
-  }
-
-  useEffect(()=>{
-    setTimeout(()=>{
-    const fetchFollowing=async ()=>{
-
-      const userFollowerData = await followerService.fetchUserFollowers(userId);
-      console.log(userFollowerData)
-      setFollowerCount(userFollowerData.length)
-      setFollowerData(userFollowerData)  
-
-      const userFollowingData = await followingService.fetchUserFollowings(userId);
-      setFollowingCount(userFollowingData.length)
-      setFollowingData(userFollowingData)    
-
-      if(usrId){
-      const selfFollowerData = await followerService.fetchSelfFollowers(usrId);
-      console.log(selfFollowerData)
-      setSelfFollowerData(selfFollowerData)  
-
-      const selfFollowingData = await followingService.fetchSelfFollowings(usrId);
-      console.log(selfFollowingData)
-      setSelfFollowingData(selfFollowingData)  
-      }
-  }
-    fetchFollowing();
-  },300)
-  },[userId,usrId,setSelfFollowingData,selfFollowingData])
-
-
-  useEffect(()=>{
-    if(userId===usrId){
-      setselfProfile(true);
-    }
-    else{
-      setselfProfile(false);
-    if(selfFollowingData.includes(userId)===true){
-      setFollowButtonValue('Unfollow')
-    }
-    else{
-      if(selfFollowerData.includes(userId)===true){
-        setFollowButtonValue('Follow Back')
-      }
-      else{
-        setFollowButtonValue('Follow')
-      }
-      
-    }
-  }
-  },[userId,usrId,followButtonValue,selfFollowingData,selfFollowerData])
-
-
-  useEffect( () => {
-    const fetchData=async ()=>{
-      setLoading(true);
-      setActiveTab('posts')
-    const response= await fetch(`http://localhost:3001/get-user-data/${userId}`,{
-      method:'GET',
-      mode:'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    const data= await response.json();
-    if(response.ok){
-      
-      const timer = setTimeout(() => {
-        setLoading(false);
-      }, 500);
-      setUser(data);
-      
-    }
-  }
-  fetchData();
-  }, [userId]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 900);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (isMoreInfoOpen && !event.target.closest('.more-info-cntnr')) {
-        setIsMoreInfoOpen(false);
-      }
-    };
-
-    document.body.addEventListener('click', handleOutsideClick);
-
-    return () => {
-      document.body.removeEventListener('click', handleOutsideClick);
-    };
-  }, [isMoreInfoOpen]);
-
-  const toggleDropdown = () => {
-    setIsMoreInfoOpen(!isMoreInfoOpen);
-  };
-
-  useEffect(()=>{
-    setTimeout(()=>{
-    const fetchUserUploadsFiles=async ()=>{
-        // if(userId){
-            // console.log(UserId);
-    try{
-        // const checkDetails = new URLSearchParams({
-        //   });
-        const response=await fetch(`http://localhost:7001/fetch-user-uploads/${userId}`,{
-            method:'GET',
-            mode:'cors'                
-        });
-        if(response.ok){
-            const data= await response.json();
-            const uploadsArray=data.result;
-            setUserUploads(uploadsArray)
-        }
-
-    }catch(error){
-        console.log(error)
-    }
-// }
-// }
-    // const fetchUserFiles=async ()=>{
-        // if(userId){
-            // console.log(UserId);
-    try{
-        // const checkDetails = new URLSearchParams({
-        //   });
-        const response=await fetch(`http://localhost:7001/fetch-user-files/${userId}`,{
-            method:'GET',
-            mode:'cors'                
-        });
-        if(response.ok){
-            const data= await response.json();
-            const filesArray=data.result;
-            setUserFiles(filesArray)
-        }
-
-    }catch(error){
-        console.log(error)
-    }
-// }
-}
-fetchUserUploadsFiles();
-},200)
-// fetchUserFiles();
-},[userId])
-  
+  },[isNotificationActive])
   return (
     <div>
-      {loading ? (
+      {/* {loading ? (
         <UserProfileSkeleton/> // Render skeleton animation while loading
-      ) : (
-      
-      <div className="userprofile-main-container">
+      ) : ( */}
 
-        <div className="userprofile-view-container">
-          <div className="profile-cover-container"></div>
+      <div className="user-profile-main-container">
+        <div className="user-profile-view-container">
+          <div className="user-profile-disclaimer-info" title="privacy policy"><div className="disclaimer-svg"><DisclaimerSVG height={20} width={20}/></div> <div className="disclaimer-content">When you join meetings, webinars, chats or channels hosted on <span style={{color:'#0e72ed',fontWeight:'600'}}>MeetOrbit</span>, your profile information, including your name and profile picture, may be visible to other participants or members. Your name and email address will also be visible to the <Link to='/privacy-statements' className="disclaimer-link">account owner</Link> and host when you join meetings, webinars, chats or channels on their account while you’re signed in. The account owner and others in the meeting, webinar, chat or channel can share this information with apps and others.</div></div>
+          {isNotificationActive && <div className="upgrade-user-subscription-notification">
+            <div className="upgrade-notification-content">You are on basic plan</div>
+            <Link to='/plan-pricing' className="upgrade-notification-upgrade-link">Upgrade for more features <StarSVG/></Link>
+            <div className="upgrade-notification-close-btn" onClick={()=>setIsNotificationActive((prev)=>!prev)}><PiXBold/></div>
+          </div>}
+          <div className="user-profile-wrapper">
 
-          <div className="user-profile-info-container">
-
-            <div className="user-profile">
-              <div className="user-profile-image-container"><img src={user.profileImg} alt='profile' /></div>
+              <div className="user-profile-edit-btn">Edit Profile <div className="profile-edit-btn-icon"><PiNotePencilBold/></div></div>
+            <div className="user-profile-info-container">
+              <div className="user-profile-image-container"><img src="https://lh3.googleusercontent.com/a/ACg8ocJeC4HcwSV54yIDLdQFZ6C_mTm-r3i-MMBatonqCzrw7CZG9A=s96-c" alt="profile" onError={(e)=>{e.onError=null;e.target.src=User}}/></div>
 
               <div className="user-profile-data-container">
-                <div className="user-name-follow-btn-cntnr">
-                  <div className="user-name">{user.name}</div>
-                  <button className={`user-follow-button ${selfProfile===true?'hide':''}`} onClick={handleFollowUnfollow}>{followButtonValue}</button>
-                </div>
-                <div className="follower-following-count-cntnr">
-                  <div className="followers-count-value">{followerCount} Followers</div>
-                  <div style={{fontWeight:'bold',fontSize:'15px',marginTop:'-8px',height:'5px'}}>.</div>
-                  <div className="following-count-value">{followingCount} Following</div>
-                </div>
-                <div className={`followers-picture-row-container ${followerData.length===0?'hide':''}`}>
-                  {firstFollowerData.map(followers=>(
-                    <div className="follower-profile-cntnr" key={followers.userId}><Link to={`/dashboard/profile/${followers.userId}`}><img src={followers.profileImg} alt="" /></Link></div>
-                  ))}
-                  <div className='follower-profile-cntnr more-follower' onClick={()=>handleTabSwitch('followers')}><div className='follower-profile-more-icon'><FaEllipsisH/></div></div>
-                </div>
-                <div className="user-type-and-more-info-cntnr">
-                  <div className="user-type-cntnr">{user.designation}</div>
-                  <div className="more-info-cntnr">
-                    <div className="more-info-label" onClick={toggleDropdown}>More Info<PiCaretRightBold/></div>
-                    <div className={`more-info-content ${isMoreInfoOpen ? 'open' : ''}`}>
-                      <div className="more-info-content-title">More Details</div>
-                      <hr className="more-info-horizontal-line" />
-                      <div className="more-info-all-topic-cntnr">
-                      <div className="more-info-topic-cntnr">
-                        <div className="more-info-topic-title"><div className="topic-icons"><FaGraduationCap style={{fontSize:'20px'}}/></div> Study At</div>
-                        {/* <div className="more-info-topic-content">{user.institution}<br/>{user.degree} - {user.course}</div> */}
-                        <div className="more-info-topic-content">{user.institution}<br/>{user.degree} - {user.course}<br/>{user.studyYear===null?data.studyYear+' Student':''}</div>
-                      </div>
-
-                      {user.address===null?
-                      <div className='more-info-topic-cntnr'>
-                        <div className="more-info-topic-title"><div className="topic-icons"><FaLocationDot style={{fontSize:'18px'}}/></div>Address</div>
-                        <div className="more-info-topic-content">{user.institution}</div>
-                      </div>:''}
-
-                      <div className="more-info-topic-cntnr">
-                        <div className="more-info-topic-title"><div className="topic-icons"><PiAddressBookFill style={{fontSize:'20px'}}/></div> Contact On</div>
-                        <div className="more-info-topic-content"><FaEnvelope/>{user.email}</div>
-                        {user.phone===null?<div className="more-info-topic-content"><FaPhoneAlt/>{user.phone}</div>:''}
-                      </div>
-
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="user-profile-institution-cntnr">
-                  <div className="institution-icon"><FaUniversity/></div>
-                  <div className="user-institution-name">{user.institution}</div>
-                </div>
+                <div className="user-name-cntnr"><div className="user-name">Anish Gupta</div></div>
+                <div className="user-nick-name-cntnr"><div className="user-nick-name">Anish Gupta <div className="nick-name-edit-icon"><PiPencilSimpleLine/></div></div>{'( This is used for meetings you join !! )'}</div>
               </div>
+
             </div>
 
-            <div className="profile-horizontal-line" ></div>
+            <div className="user-profile-personal-details-cntnr">
+              <div className="personal-details-header-cntnr">Personal</div>
+              <div className="personal-details-content">
+                <table className="profile-details-table">
+                <tr>
+                  <td className="detail-table-column column-1">Phone</td>
+                  <td className="detail-table-column column-2">Not Set</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Language</td>
+                  <td className="detail-table-column column-2">English</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Time Zone</td>
+                  <td className="detail-table-column column-2">Not Set</td>
+                </tr>
+                </table>
+              </div>
+            </div>
+          </div>
 
+          <div className="user-profile-meeting-details-wrapper">
+              <div className="meeting-details-header-cntnr">Meeting</div>
+              <div className="meeting-details-content">
+                <table className="profile-details-table">
+                <tr>
+                  <td className="detail-table-column column-1">Personal Meeting ID</td>
+                  <td className="detail-table-column column-2">Not Set</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Quick Link</td>
+                  <td className="detail-table-column column-2">Not Set</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Meeting Key</td>
+                  <td className="detail-table-column column-2">Not Set</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Meeting Duration</td>
+                  <td className="detail-table-column column-2">You can host up to <i>40 minutes</i> per meeting</td>
+                </tr>
+                <tr>
+                  <td className="detail-table-column column-1">Team Chat</td>
+                  <td className="detail-table-column column-2">Enabled</td>
+                </tr>
+                </table>
+              </div>
           </div>
-        </div>
-        <div className="user-profile-menu-main-container">
-          <div className="user-profile-menu" id='profile-menu'>
-            <div className={`profile-menu-option ${activeTab === 'posts'?'postActive':''}`} onClick={()=>handleTabSwitch('posts')}>Posts</div>
-            <div className={`profile-menu-option ${activeTab === 'followers'?'followerActive':''}`} onClick={()=>handleTabSwitch('followers')}>Followers</div>
-            <div className={`profile-menu-option ${activeTab === 'followings'?'followingActive':''}`} onClick={()=>handleTabSwitch('followings')}>Following</div>
-          </div>
-          <div className="profile-menu-content-container">
-          {activeTab === 'posts' && <UserPosts userUploads={userUploads} userFiles={userFiles} selfProfile={selfProfile}/>} 
-          {activeTab === 'followers' && <UserFollowers followerData={followerData}/>} 
-          {activeTab === 'followings' && <UserFollowings followingData={followingData}/>} 
-          </div>
+
+
+
         </div>
 
       </div>
-      )}
     </div>
-  )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;

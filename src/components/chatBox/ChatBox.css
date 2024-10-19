@@ -7,6 +7,7 @@
     /* border-radius: 12px; */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+  /* z-index: 10; */
     
 }
 .chatbox-top-nav{
@@ -44,37 +45,59 @@
     color: red;
     background-color: rgba(0, 0, 0, 0.03);
 }
+
 .chatbox-chat-wrapper{
     display: flex;
     flex-direction: column;
     gap: 10px;
     height: 84%;
     background-color: rgba(0, 0, 0, 0.04);
-    padding: 8px 10px 6px 10px;
-    box-shadow: rgba(0, 0, 0, 0.5) 0px -10px 15px -16px inset;
+    padding: 8px 10px 6px 8px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px -10px 15px -16px inset;
     overflow-y: scroll;
+}
+.message-cntnr{
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+.sender-profile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    color: white;
 }
 .message-wapper{
     background-color: white;
     padding: 4px 8px;
-    border-top-left-radius: 12px;
     border-top-right-radius: 12px;
+    border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
     border: 0.5px solid rgba(0, 0, 0, 0.04);
-    width: fit-content;
+    /* width: fit-content; */
     text-wrap: wrap;
+    overflow: hidden;
+    min-width: 40%;
     max-width: 80%;
     box-shadow: rgba(33, 35, 38, 0.05) 0px 10px 10px -10px;
 }
 .message-sender-name{
-    color: #0e72ed;
+    /* color: var(--primary_color); */
     font-size: 14px;
     font-weight: 600;
 }
 .message-content{
     font-size: 12px;
-    margin-left: 5px;
     color: rgba(0, 0, 0, 0.8);
+}
+.message-timestamp{
+    display: flex;
+    float: right;
+    font-size: 8px;
+    color: #888;
 }
 
 .chatbox-chat-bottom{
@@ -106,5 +129,25 @@
     color: rgba(0, 0, 0, 0.3);
 }
 .chatbox-chat-send-btn.active{
-    color: #0e72ed;
+    color: var(--primary_color);
 }
+
+.scroll-to-bottom-btn {
+    position: absolute;
+    bottom: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: var(--primary_color);
+    border: none;
+    border-radius: 50%;
+    padding: 8px 12px;
+    cursor: pointer;
+    z-index: 10;
+    /* box-shadow: rgba(33, 35, 38, 0.05) 0px 10px 10px -10px; */
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 15px;
+}
+
+/* .scroll-to-bottom-btn:hover {
+   top: 2px;
+} */

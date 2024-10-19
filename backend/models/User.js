@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
+
+// user schema
 const userSchema = new mongoose.Schema({
     googleId: { type: String, unique: true, sparse: true },
     userId: {type:String,required:true,unique:true},
@@ -8,32 +9,48 @@ const userSchema = new mongoose.Schema({
     userEmail: { type: String, required: true, unique: true },
     userPassword: { type: String },
     profileImg:{type:String,required:true},
-});
-const meetingSchema = new mongoose.Schema({
-    userId: {type:String,required:true,unique:true},
-    meetingId:{type:String,required:true,unique:true},
-    meetingPassword: {type:String,required:true},
-    meetingLink:{type:String,required:false}
-});
-const roomSchema = new mongoose.Schema({
-    roomId: {type:String,required:true,unique:true},
-    roomPassword:{type:String,required:true,unique:true},
-    participants: {type:Array}
+    colorId:{type:String,required:true},
 });
 
-// Hash the password before saving the users
-// userSchema.pre('save', async function (next) {
-//     if (!this.isModified('userPassword')) return next();
-//     const salt = await bcrypt.genSalt(10);
-//     this.userPassword = await bcrypt.hash(this.userPassword, salt);
-//     next();
-// });
+
+
+// meeting schema
+const recentMeetingSchema = new mongoose.Schema({
+    title: {type: String,required: true},
+    startTime: {type: Date,required: true},
+    endTime: {type: Date,required: true},
+    duration: {type: Number,required: true},
+})
+const scheduledMeetingSchema = new mongoose.Schema({
+    title: {type: String,required: true},
+    scheduledTime: {type: Date,required: true},
+    timeBefore: {type: Number,default: "15"},
+    createdAt: {type: Date,default: Date.now},
+})
+const recordingSchema = new mongoose.Schema({
+    title: {type: String,required: true},
+    favourite: {type: Boolean,default: false},
+    inTrash: {type: Boolean,default: false},
+    meetingDate: {type: Date,required: true},
+    videoLink:{type: String,required: true},
+    createdAt: {type: Date,default: Date.now},
+})
+const meetingSchema = new mongoose.Schema({
+    userId: {type:String,required:true,unique:true},
+    meetingName:{type:String,required:true},
+    meetingId:{type:String,required:true,unique:true},
+    meetingPassword: {type:String,required:true},
+    meetingLink:{type:String,required:false},
+    meetingRecordings:[recordingSchema],
+    recentMeetings:[recentMeetingSchema],
+    scheduledMeetings:[scheduledMeetingSchema],
+});
+
 
 const User = mongoose.model('User', userSchema, 'users');
 const MeetingDetails = mongoose.model('MeetingDetails',meetingSchema,'meetingInfo')
-const RoomDetails = mongoose.model('RoomDetails',roomSchema,'rooms')
+
 module.exports = {
     User,
     MeetingDetails,
-    RoomDetails
 };

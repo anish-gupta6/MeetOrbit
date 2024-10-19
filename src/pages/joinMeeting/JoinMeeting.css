@@ -22,7 +22,7 @@
     gap: 4px;
 }
 .join-meeting-label{
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
 }
 .join-meeting-input{
@@ -35,7 +35,7 @@
     transition: border 0.25s ease-in-out;
 }
 .join-meeting-input:focus{
-    border: 2px solid #0e72ed;
+    border: 2px solid var(--primary_color);
 }
 .join-form-desc{
     font-size: 14px;
@@ -50,12 +50,13 @@
     border-radius: 10px;
 }
 .join-form-submit-btn.active{
-    background-color: #0e72ed;
+    background-color: var(--primary_color);
     color: white;
+    cursor: pointer;
 }
 .join-form-links{
     text-decoration: none;
-    color: #0e72ed;
+    color: var(--primary_color);
 }
 .join-form-links:hover{
     text-decoration: underline;

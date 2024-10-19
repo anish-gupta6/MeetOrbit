@@ -1,89 +1,144 @@
 // src/App.js
-import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes,Navigate, useLocation } from 'react-router-dom';
 import Dashboard from './pages/dashboard/Dashboard';
-import Home from './pages/home/Home';
+import Main from './pages/main/Main';
 import SignIn from './pages/auth/signIn/SignIn'
 import SignUp from './pages/auth/signUp/SignUp'
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import Room from './pages/room/Room';
 import Meeting from './pages/userMeeting/Meeting';
 import { SocketProvider } from './components/contexts/SocketProvider';
 import JoinMeeting from './pages/joinMeeting/JoinMeeting';
 import MeetingMiddleware from './components/middleware/MeetingMiddleware';
+import RoomContextPro from './components/contexts/RoomContextPro';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import VerifyForgotPassword from './pages/auth/forgotPassword/VerifyForgotPassword';
+import ResetForgotPassword from './pages/auth/forgotPassword/ResetForgotPassword';
+import MeetingLobby from './pages/lobby/MeetingLobby';
+import DashboardHome from './pages/dashHome/DashboardHome';
+import UserProfile from './pages/userProfile/UserProfile';
+import PlansPricing from './pages/plansPricing/PlansPricing';
+import PersonalRoom from './pages/userMeeting/PersonalRoom';
+import UpcomingMeeting from './pages/userMeeting/UpcomingMeeting';
+import RecentMeeting from './pages/userMeeting/RecentMeeting';
+import AllRecording from './pages/userRecording/AllRecording';
+import Recording from './pages/userRecording/Recording';
+import FavouriteRecording from './pages/userRecording/FavouriteRecording';
+import TrashRecording from './pages/userRecording/TrashRecording';
+import Note from './pages/userNotes/Note';
+import NotePreview from './pages/userNotes/NotePreview';
+import NoteEditor from './pages/userNotes/NoteEditor';
+import CryptoJS from 'crypto-js'
+import AppLoader from './components/appLoader/AppLoader';
 
 
+const useAuth = () => {
+  const [userInfo, setUserInfo] = useState(localStorage.getItem("userData"));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUserInfo(localStorage.getItem("userData"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  return !!userInfo;
+};
+
+const RequireAuth = ({ children }) => {
+  const isAuthenticated = useAuth();
+  return isAuthenticated ? children : <Navigate to="/signin" />;
+};
+
+const HasAuth = ({ children }) => {
+  const isAuthenticated = useAuth();
+  return !isAuthenticated ? children : <Navigate to="/home" />;
+};
+
+export const userContext = createContext(null)
 
 function App() {
 
-  const RequireAuth = ({ children }) => {
-    const [userInfo, setUserInfo] = useState(localStorage.getItem("userData"));
+  const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  const secretKey = 'zoomClone';
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setUserInfo(localStorage.getItem("userData"));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    // Cleanup the event listener when the component is unmounted
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
+    const encryptedData = localStorage.getItem('userData');
+    if (encryptedData) {
+      try {
+        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+        console.log(bytes)
+        const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+        console.log(decryptedData)
+        const parsedData = JSON.parse(decryptedData);
+        setUserInfo(parsedData);
+      } catch (error) {
+        console.error("Error decrypting user data:", error);
+      }
+    }
+    setTimeout(()=>{
+      setIsLoading(false);
+    },1200)
+      // setIsLoading(false);
   }, []);
 
-
-    return userInfo ? children : <Navigate to="/signin" />;
-    
-  };
-  
-  const HasAuth = ({ children }) => {
-    const [userInfo, setUserInfo] = useState(localStorage.getItem("userData"));
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUserInfo(localStorage.getItem("userData"));
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    // Cleanup the event listener when the component is unmounted
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-
-    return !userInfo ? children : <Navigate to="/dashboard" />;
-  };
-  
+  if (isLoading) {
+    return <AppLoader/>; // Render a loading state
+  }
 
   return (
-    // <Router>
+    <>
+    <div className="App">
+      <ToastContainer position="top-center" autoClose={2500} hideProgressBar={true} pauseOnHover={false} pauseOnFocusLoss={false} limit={3}/>
+    </div>
+    <userContext.Provider value={{userInfo,isLoading}}>
       <Routes>
-        <Route exact path='/' element={<HasAuth><Home/></HasAuth>}/>
+        <Route exact path='/' element={<HasAuth><Main/></HasAuth>}/>
         <Route exact path='/signin' element={<HasAuth><SignIn/></HasAuth>}/>
         <Route exact path='/signup' element={<HasAuth><SignUp/></HasAuth>}/>
+        <Route exact path='/forgot-password/verify' element={<HasAuth><VerifyForgotPassword/></HasAuth>}/>
+        <Route exact path='/forgot-password/reset' element={<HasAuth><ResetForgotPassword/></HasAuth>}/>
         <Route exact path='/join-meeting' element={<JoinMeeting/>}/>
+        <Route exact path='/meeting/room/wr' element={<MeetingLobby/>}/>
+        
+        {/* <Route exact path='/meeting/room/:mode/j' element={<MeetingMiddleware/>} />
+        <Route exact path='/meeting/room/s' element={<RoomContextPro><Room/></RoomContextPro>} /> */}
+        <Route exact path='/meeting/room/:mode/j' element={<SocketProvider><MeetingMiddleware/></SocketProvider>} />
+        <Route exact path='/meeting/room/s' element={<SocketProvider><RoomContextPro><Room/></RoomContextPro></SocketProvider>} />
+        <Route exact path='/plan-pricing' element={<PlansPricing/>}/>
 
-        {/* <Route exact path='/meeting'> */}
-          {/* <SocketProvider> */}
-            <Route exact path='/meeting/room/:mode/j' element={<SocketProvider><MeetingMiddleware/></SocketProvider>} />
-            <Route exact path='/meeting/room/s' element={<SocketProvider><Room/></SocketProvider>} />
-          {/* </SocketProvider> */}
-        {/* </Route> */}
 
-        <Route exact path='/dashboard' element={<RequireAuth><Dashboard/></RequireAuth>}>
-          <Route exact path='/dashboard/profile'/>
-          <Route exact path='/dashboard/edit-profile'/>
-          <Route exact path='/dashboard/notifications'/>
-          <Route exact path='/dashboard/meeting' element={<Meeting/>}/>
-          <Route exact path='/dashboard/webinar'/>
-          <Route exact path='/dashboard/recording'/>
-          <Route exact path='/dashboard/plan-pricing'/>
-          <Route exact path='/dashboard/setting'/>
+        <Route exact path='/home' element={<RequireAuth><Dashboard/></RequireAuth>}>
+          <Route index element={<DashboardHome/>}/>
+          <Route exact path='/home/profile' element={<UserProfile/>}/>
+          <Route exact path='/home/meeting' element={<Meeting/>}>
+            <Route index element={<PersonalRoom/>}/>
+            <Route exact path='/home/meeting/upcoming-meetings' element={<UpcomingMeeting/>}/>
+            <Route exact path='/home/meeting/recent-meetings' element={<RecentMeeting/>}/>
+          </Route>
+          <Route exact path='/home/recording' element={<Recording/>}>
+            <Route index element={<AllRecording/>}/>
+            <Route exact path='/home/recording/favourite-recordings' element={<FavouriteRecording/>}/>
+            <Route exact path='/home/recording/trash-recordings' element={<TrashRecording/>}/>
+          </Route>
+          <Route exact path='/home/notes' element={<Note/>}>
+            <Route index element={<NotePreview/>}/>
+            <Route exact path='/home/notes/completed'/>
+            <Route exact path='/home/notes/pending'/>
+            <Route exact path='/home/notes/editor' element={<NoteEditor/>}/>
+          </Route>
+          <Route exact path='/home/edit-profile'/>
+          <Route exact path='/home/notifications'/>
+          <Route exact path='/home/whiteboard'/>
+          <Route exact path='/home/setting'/>
         </Route>
       </Routes>
-    // </Router>
+      </userContext.Provider>
+      </>
+    
   );
 }
 

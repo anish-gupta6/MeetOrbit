@@ -1,19 +1,15 @@
 import React,{useState} from 'react';
 import './SignIn.css';
-import {Link,useNavigate} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import GoogleIcon from '../../../assets/GoogleIcon.png'
-// import MicrosoftIcon from '../../../assets/icons/MicrosoftIcon.png'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEye,faEyeSlash } from '@fortawesome/free-regular-svg-icons'
-// import AuthService from '../authService/Auth.Service';
-// import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import {UserAuth} from '../../../components/contexts/AuthContext'
 import MidNavbar from '../../midNav/MidNavbar';
 import {ReactComponent as SignInSVG} from '../../../assets/signIn-svg.svg'
+import {useToast} from '../../../ToastService'
 
 const SignIn = () => {
-  const navigate = useNavigate();
-  // const authService = AuthService();
     const [isEmailActive, setIsEmailActive] = useState(false);
     const [isPasswordActive, setIsPasswordActive] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -21,10 +17,9 @@ const SignIn = () => {
     const [eyeIcon, setEyeIcon] = useState(faEye);
     const [emailValue, setemailValue] = useState('');
     const [passwordValue, setpasswordValue] = useState('');
-    const [formError, setFormError] = useState('');
-    const [isFormMsg, setIsFormMsg] = useState(false);
+    const {notifyError,notifyInfo,notifyWarning} = useToast();
 
-    const {userLogin,handleGoogleSignUp}=UserAuth();
+    const {userLogin,handleGoogleAuth}=UserAuth();
 
     function handleEmailChange(text) {
         setemailValue(text);
@@ -41,32 +36,33 @@ const SignIn = () => {
         setpasswordValue(pass);
         setIsPasswordActive(pass !== ''?true:false);
       }
+      
+      function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    }
 
     const handleSubmit=async (e)=>{
       e.preventDefault();
         const userEmail=emailValue;
         const userPassword=passwordValue;
-      setIsFormMsg(false);
+        if(!userEmail && !userPassword){
+          notifyWarning('Enter your login credentials !!');
+          return
+        }
+        if(!validateEmail(userEmail)){
+          notifyError('Enter a valid email !!');
+          return
+        }
       try{
         const {message,success} = await userLogin(userEmail,userPassword)
         if (success) {
-          setFormError(message);
-          setIsFormMsg(true);
+          notifyInfo(message)
         } else {
-          setFormError(message);
+          notifyError(message)
         }
       }catch(err){
         console.log(err)
-      }
-      if(formError!==""){
-        setTimeout(() => {
-          setFormError("");
-       }, 5000);
-      }
-      else{
-        setTimeout(() => {
-          setFormError("");
-        }, 5000);
       }
     }
 
@@ -85,8 +81,8 @@ const SignIn = () => {
           
                 <div className="input-field-cntnr">
                 <div className="inp-cntnr">
-                <input type="email" id="email" name="email" autoComplete='off' className="login-page-input-field email-field" value={emailValue}
-                    onChange={(e) => handleEmailChange(e.target.value)} required/>
+                <input type="text" id="email" name="email" autoComplete='off' className="login-page-input-field email-field" value={emailValue}
+                    onChange={(e) => handleEmailChange(e.target.value)}/>
                 <label htmlFor="email" className={`login-input-label login-page-email-label ${isEmailActive ? 'Active' : ''}`}>Email address</label>
               </div>
             </div>
@@ -95,27 +91,25 @@ const SignIn = () => {
             <div className="input-field-cntnr pass-cntnr">
               <div className="inp-cntnr">
                 <input type={inputType} id="password" name="password" className="login-page-input-field pass-field" value={passwordValue}
-                    onChange={(e) => handlePasswordChange(e.target.value)}  required/>
+                    onChange={(e) => handlePasswordChange(e.target.value)}/>
                     
                 <label htmlFor="password" className={`login-input-label login-page-password-label ${isPasswordActive ? 'Active' : ''}`}>Password</label>
               </div>
               <FontAwesomeIcon icon={eyeIcon} className='show-pass-icon' onClick={handlePasswordVisibility}/>
             </div>
 
-              <div className={`form-error-cntnr ${isFormMsg?'Active':''}`}>{formError}</div>
               <button type="submit" className="login-page-submit-btn">Continue</button>
-              <div className='forgot-pass-link'><Link to="/forgot-password" className='forgot-password'>Forgot Your Password?</Link></div>
+              <div className='forgot-pass-link'><Link to="/forgot-password/verify" className='forgot-password'>Forgot Your Password?</Link></div>
 
             </form>
             <p>Don't have an account? <Link to="/signup" className='signUp'>Sign Up</Link></p>
 
             <div style={{display:'flex',alignItems:'center',justifyContent:'center',width:'100%',marginTop:'10px'}}> <div className="line" ></div> <span style={{margin:'0 10px'}}>OR</span><div className="line"></div></div>
             {/* <GoogleLoginButton onSuccess={handleLoginSuccess} onFailure={handleLoginFailure}/> */}
-            <button className="social-button" id="google-button" onClick={handleGoogleSignUp}><img src={GoogleIcon} width={20} height={20} alt='G'/>Continue with Google</button>
+            <button className="social-button" id="google-button" onClick={handleGoogleAuth}><img src={GoogleIcon} width={20} height={20} alt='G'/>Continue with Google</button>
             </div>
             </div>
     </div>
-    {/* <div className="alert-message">  {message && <p>{message}</p>}  </div> */}
     </section>
     </div>
   )

@@ -13,7 +13,7 @@ const JoinMeeting = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if(meetingPassword.length>4 & meetingId.length!=0){
+        if(meetingPassword.length>5 & meetingId.length!=0){
             setIsBtnActive(true)
         }else{
             setIsBtnActive(false)
@@ -24,8 +24,10 @@ const JoinMeeting = () => {
         e.preventDefault();
         const secretKey = 'zoomClone'
       const encMeetingPassword = CryptoJS.AES.encrypt(meetingPassword, secretKey).toString();
-        navigate(`/meeting/room/join/j?id=${meetingId}&pwd=${encMeetingPassword}`,{state:{meetingId:meetingId,meetingPassword:meetingPassword}});
-        // navigate(`/meeting/room/join/j?id=1234&pwd=123`);
+      if(isBtnActive){
+        navigate(`/meeting/room/wr?id=${meetingId}&pwd=${encodeURIComponent(encMeetingPassword)}`);
+        // navigate(`/meeting/room/join/j?id=${meetingId}&pwd=${encMeetingPassword}`,{state:{meetingId:meetingId,meetingPassword:meetingPassword}});
+      }
     }
 
   return (
@@ -45,7 +47,7 @@ const JoinMeeting = () => {
                 </div>
                 <div className="join-input-label-cntnr">
                     <label htmlFor="meetingPassword" className='join-meeting-label'>Meeting Password</label>
-                    <input type="text" name='meetingId' id='meetingPassword' className='join-meeting-input' placeholder='Enter Meeting Password' value={meetingPassword} onChange={(e)=>setMeetingPassword(e.target.value)}/>
+                    <input type="text" name='meetingPassword' id='meetingPassword' className='join-meeting-input' placeholder='Enter Meeting Password' value={meetingPassword} onChange={(e)=>setMeetingPassword(e.target.value)}/>
                 </div>
                 <div className="join-form-desc">By clicking "Join", you agree to our <Link to='' className='join-form-links'> Terms of Services</Link> and <Link to='' className='join-form-links'>Privacy Statement</Link></div>
                 <button type="submit" className={`${isBtnActive?'active':''} join-form-submit-btn`}>Join</button>

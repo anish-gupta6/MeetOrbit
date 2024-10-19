@@ -1,6 +1,7 @@
 import React from 'react'
 import './Navbar.css'
 import {Link} from 'react-router-dom'
+import Logo from '../../assets/Logo.png'
 
 const Navbar = () => {
   return (
@@ -8,7 +9,8 @@ const Navbar = () => {
       <header className="nav-header-container">
     <nav className="upper-nav-main-container">
       <div className="lower-navlinks-main-container">
-        <Link to='/' className="upper-nav-logo-container"><img src="https://us05st2.zoom.us/static/6.3.24306/image/new/topNav/Zoom_logo.svg" alt="" /></Link>
+        {/* <Link to='/' className="upper-nav-logo-container"><img src="https://us05st2.zoom.us/static/6.3.24306/image/new/topNav/Zoom_logo.svg" alt="" /></Link> */}
+        <Link to='/' className="upper-nav-logo-container"><img src={Logo} alt="" className='upper-nav-logo'/></Link>
       </div>
 
 

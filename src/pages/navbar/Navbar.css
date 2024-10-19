@@ -2,7 +2,7 @@
 .nav-header-container{
     width: 100%;
     position: fixed;
-    line-height: 70px;
+    line-height: 60px;
     z-index: 1;
     background-color: white;
     box-shadow: 0px 4px 16px 0px rgba(0,0,0,0.08);
@@ -10,6 +10,9 @@
 .upper-nav-logo-container{
     display: flex;
     align-items: center;
+}
+.upper-nav-logo{
+    width: 150px;
 }
 .upper-nav-main-container{
     display: flex;
@@ -28,7 +31,7 @@
 }
 .upper-nav-join-host:hover{
     margin-top: -2px;
-    color: #0e72ed;
+    color: var(--primary_color);
 }
 .upper-nav-auth-container{
     display: flex;
@@ -59,10 +62,10 @@
     text-decoration: none;
     padding: 6px 14px;
     font-weight: 600;
-    color: #0e72ed;
+    color: var(--primary_color);
     height: 30px;
     border-radius: 15px;
-    border: 2px solid #0e72ed;
+    border: 2px solid var(--primary_color);
     font-size: 16px;
     margin-left: 20px;
 }
