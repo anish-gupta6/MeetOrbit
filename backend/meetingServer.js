@@ -8,6 +8,8 @@ const { ExpressPeerServer } = require('peer');
 const {MeetingDetails} = require('./models/User');
 
 dotenv.config();
+const port = process.env.PORT || 3001;
+
 // Initialize express app
 const app = express();
 app.use(
@@ -301,6 +303,6 @@ io.on('connection', (socket) => {
 });
 
 // Start the server
-server.listen(3001, '0.0.0.0',() => {
-  console.log('Server is running on port 3001');
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
