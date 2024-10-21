@@ -13,7 +13,7 @@ const ParticipantBox = () => {
 
     const fetchParticipants = async () => {
     try{
-    const response = await fetch(`http://localhost:3001/meeting/${meetingId}/participants`);
+    const response = await fetch(`https://meetorbit-backend.onrender.com/meeting/${meetingId}/participants`);
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);

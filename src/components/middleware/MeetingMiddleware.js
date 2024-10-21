@@ -26,7 +26,7 @@ const MeetingMiddleware = () => {
       if(meetingId && meetingPassword){
         console.log(meetingId,meetingPassword)
       try{
-        const response = await fetch('http://localhost:3001/meeting/create-room',{
+        const response = await fetch('https://meetorbit-backend.onrender.com/meeting/create-room',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const MeetingMiddleware = () => {
       if(meetingId && meetingPassword){
         console.log(meetingId,meetingPassword)
       try{
-        const response = await fetch('http://localhost:3001/meeting/join-room',{
+        const response = await fetch('https://meetorbit-backend.onrender.com/meeting/join-room',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

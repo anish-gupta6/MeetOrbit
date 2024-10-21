@@ -7,7 +7,7 @@ const SocketContext = createContext(null);
 let socket;
 export const getSocket = () => {
   if (!socket) {
-    socket = io.connect("http://localhost:3001");
+    socket = io.connect("https://meetorbit-backend.onrender.com");
   }
   return socket;
 };

@@ -59,7 +59,7 @@ const Room = () => {
   useEffect(()=>{
     const fetchMeetingInfo = async () =>{
       try{
-      const response = await fetch(`http://localhost:3001/getMeetingInfo/${meetingId}`)
+      const response = await fetch(`https://meetorbit-backend.onrender.com/getMeetingInfo/${meetingId}`)
       if(response.ok){
         const data = await response.json();
         console.log(data.meetingInfo)

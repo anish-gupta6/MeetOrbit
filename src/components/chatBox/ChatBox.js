@@ -35,7 +35,7 @@ const ChatBox = () => {
     useEffect(()=>{
       const fetchChatHistory = async () => {
       try{
-      const response = await fetch(`http://localhost:3001/meeting/${meetingId}/chat`);
+      const response = await fetch(`https://meetorbit-backend.onrender.com/meeting/${meetingId}/chat`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
