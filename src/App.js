@@ -60,7 +60,7 @@ const HasAuth = ({ children }) => {
 export const userContext = createContext(null)
 
 function App() {
-
+  const backend = 'https://meetorbit-1.onrender.com'
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const secretKey = 'zoomClone';
@@ -94,7 +94,7 @@ function App() {
     <div className="App">
       <ToastContainer position="top-center" autoClose={2500} hideProgressBar={true} pauseOnHover={false} pauseOnFocusLoss={false} limit={3}/>
     </div>
-    <userContext.Provider value={{userInfo,isLoading}}>
+    <userContext.Provider value={{userInfo,isLoading,backend}}>
       <Routes>
         <Route exact path='/' element={<HasAuth><Main/></HasAuth>}/>
         <Route exact path='/signin' element={<HasAuth><SignIn/></HasAuth>}/>

@@ -9,7 +9,7 @@ import {ContentLoaderSkeleton} from './LoaderSkeleton'
 
 const PersonalRoom = () => {
     const navigate = useNavigate();
-    const {userInfo,isLoading} = useContext(userContext);
+    const {userInfo,isLoading,backend} = useContext(userContext);
     // const meetingId = userInfo.meetingId;
     // const meetingPassword = userInfo.meetingPassword
     const hiddenPassword = '******'
@@ -29,7 +29,7 @@ const PersonalRoom = () => {
     const fetchUserDetails = async () =>{
         try{
             
-        const response = await fetch(`http://localhost:5000/api/auth/getUser/${userInfo.userId}`)
+        const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`)
         if(response.ok){
             const data = await response.json();
             setUserDetail(data.userData)

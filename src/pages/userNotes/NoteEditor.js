@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css"; // Import the styles
 import { PiArrowCircleLeftFill, PiXBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import {useToast} from '../../ToastService'
 import CryptoJS from 'crypto-js'
+import {userContext} from '../../App'
 
 const NoteEditor = () => {
   const [content, setContent] = useState("");
@@ -15,7 +16,8 @@ const NoteEditor = () => {
   const titleRef = useRef();
   const navigate = useNavigate();
   const {notifySuccess,notifyError,notifyWarning} = useToast();
-
+  const {backend} = useContext(userContext)
+  
 
   useEffect(()=>{
     const secretKey = "zoomClone"
@@ -78,7 +80,7 @@ const NoteEditor = () => {
     }
     try {
       // Save content to the database using fetch
-      const response = await fetch("http://localhost:5000/api/note/save", {
+      const response = await fetch(`${backend}/api/note/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -17,7 +17,7 @@ const NotePreview = () => {
   const [notes, setNotes] = useState([]);
   const [isDataLoading,setIsDataLoading] = useState(false)
   const {notifySuccess,notifyError} = useToast();
-  const {userInfo,isLoading,endPoint} = useContext(userContext)
+  const {userInfo,isLoading,backend} = useContext(userContext)
   const [loading,setLoading] = useState(true)
   const userId = userInfo.userId;
 
@@ -25,7 +25,7 @@ const NotePreview = () => {
   const updateNoteStatus = async (noteId) =>{
     if(userId){
       try{
-        const response = await fetch(`http://localhost:5000/api/note/updateNoteStatus`,{
+        const response = await fetch(`${backend}/api/note/updateNoteStatus`,{
           method:'POST',
           headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const NotePreview = () => {
   const deleteNote = async (noteId) =>{
     if(userId){
       try{
-        const response = await fetch(`http://localhost:5000/api/note/deleteNote`,{
+        const response = await fetch(`${backend}/api/note/deleteNote`,{
           method:'DELETE',
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const NotePreview = () => {
       if(userId){
       try{
         setIsDataLoading(true);
-        const response = await fetch(`http://localhost:5000/api/note/fetch/${userId}/${activeTab}`,{
+        const response = await fetch(`${backend}/api/note/fetch/${userId}/${activeTab}`,{
           method:'GET',
           headers: {
             "Content-Type": "application/json",

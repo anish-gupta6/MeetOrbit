@@ -9,7 +9,7 @@ import RecentActivity from '../dashHome/RecentActivity'
 
 const RecentMeeting = () => {
   const navigate = useNavigate();
-  const {isLoading,userInfo}=useContext(userContext)
+  const {isLoading,userInfo,backend}=useContext(userContext)
   const [loading,setLoading] = useState(true)
   const [userDetail,setUserDetail] = useState({})
   const [recentMeetings,setRecentMeetings] = useState([])
@@ -29,7 +29,7 @@ const RecentMeeting = () => {
     const fetchUserDetails = async () =>{
         try{
             
-        const response = await fetch(`http://localhost:5000/api/auth/getUser/${userInfo.userId}`)
+        const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`)
         if(response.ok){
             const data = await response.json();
             setUserDetail(data.userData)

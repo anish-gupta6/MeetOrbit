@@ -14,7 +14,7 @@ import {useToast} from '../../ToastService'
 const DashboardHome = () => {
 
     const navigate = useNavigate();
-    const {userInfo} = useContext(userContext)
+    const {userInfo,backend} = useContext(userContext)
     const [user,setUser] = useState({})
     const [userDetail,setUserDetail] = useState({})
     const [recentMeetings,setRecentMeetings] = useState([])
@@ -34,7 +34,7 @@ const DashboardHome = () => {
         const fetchUserDetails = async () =>{
             try{
                 
-            const response = await fetch(`http://localhost:5000/api/auth/getUser/${userInfo.userId}`)
+            const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`)
             if(response.ok){
                 const data = await response.json();
                 // console.log(data.userData)

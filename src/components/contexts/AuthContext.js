@@ -7,6 +7,7 @@ const UserContext = createContext()
 const AuthContext = ({children}) => {
     // const [profileImg,setProfileImg]=useState('https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png')
     const navigate = useNavigate();
+    const backend = 'https://meetorbit-1.onrender.com'
     
 
     const saveUserData = (userData) =>{
@@ -28,7 +29,7 @@ const AuthContext = ({children}) => {
     const userLogin = async (userEmail,userPassword,profileImg,isGoogleLogin)=>{
         try{
             console.log('here')
-            const response = await fetch('http://localhost:5000/api/auth/login',{
+            const response = await fetch(`${backend}/api/auth/login`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ const AuthContext = ({children}) => {
     // for registering user and saving data to database
     const userRegister = async (userName,userEmail,userPassword,profileImg,isGoogleRegister) =>{
         try{
-            const response = await fetch('http://localhost:5000/api/auth/register',{
+            const response = await fetch(`${backend}/api/auth/register`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ const AuthContext = ({children}) => {
     const generateOTP = async (userName,userEmail) =>{
         console.log(userName,userEmail);
         try{
-            const response = await fetch('http://localhost:5000/api/auth/generateOTP',{
+            const response = await fetch(`${backend}/api/auth/generateOTP`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -133,7 +134,7 @@ const AuthContext = ({children}) => {
     // check user already exists
     const checkUser = async (userEmail) =>{
         try{
-            const response = await fetch('http://localhost:5000/api/auth/checkUser',{
+            const response = await fetch(`${backend}/api/auth/checkUser`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -151,7 +152,7 @@ const AuthContext = ({children}) => {
     }
     const resetPassword = async (userEmail,userPassword) =>{
         try{
-            const response = await fetch('http://localhost:5000/api/auth/resetPassword',{
+            const response = await fetch(`${backend}/api/auth/resetPassword`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
