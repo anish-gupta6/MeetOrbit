@@ -37,7 +37,7 @@ const DashboardHome = () => {
             const response = await fetch(`http://localhost:5000/api/auth/getUser/${userInfo.userId}`)
             if(response.ok){
                 const data = await response.json();
-                console.log(data.userData)
+                // console.log(data.userData)
                 setUserDetail(data.userData)
                 setRecentMeetings(data.userData.recentMeetings)
             }

@@ -17,26 +17,15 @@ const NotePreview = () => {
   const [notes, setNotes] = useState([]);
   const [isDataLoading,setIsDataLoading] = useState(false)
   const {notifySuccess,notifyError} = useToast();
-  const {userInfo,isLoading} = useContext(userContext)
+  const {userInfo,isLoading,endPoint} = useContext(userContext)
   const [loading,setLoading] = useState(true)
   const userId = userInfo.userId;
-
-//   useEffect(()=>{
-//     const secretKey = "zoomClone"
-//     const userInfo = localStorage.getItem('userData');
-//     if(userInfo){
-//         const bytes = CryptoJS.AES.decrypt(userInfo, secretKey);
-//         const userData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-//         setUserId(userData.userId)
-//     }
-    
-// },[]);
 
  
   const updateNoteStatus = async (noteId) =>{
     if(userId){
       try{
-        const response = await fetch('http://localhost:5000/api/note/updateNoteStatus',{
+        const response = await fetch(`http://localhost:5000/api/note/updateNoteStatus`,{
           method:'POST',
           headers: {
             "Content-Type": "application/json",
@@ -62,7 +51,7 @@ const NotePreview = () => {
   const deleteNote = async (noteId) =>{
     if(userId){
       try{
-        const response = await fetch('http://localhost:5000/api/note/deleteNote',{
+        const response = await fetch(`http://localhost:5000/api/note/deleteNote`,{
           method:'DELETE',
           headers: {
             "Content-Type": "application/json",

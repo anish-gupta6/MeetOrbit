@@ -55,7 +55,7 @@ router.post('/register', async (req, res) => {
         // const hashedMeetingPassword = await bcrypt.hash(meetingPassword, salt);
         const hashedMeetingPassword = CryptoJS.AES.encrypt(meetingPassword, secretKey).toString();
         const colorId = getRandomColor();
-        const meetingLink = `http://localhost:3000/meeting/room/s?id=${meetingId}?pwd=${encodeURIComponent(hashedMeetingPassword)}`
+        const meetingLink = `http://localhost:3000/meeting/room/wr?id=${meetingId}?pwd=${encodeURIComponent(hashedMeetingPassword)}`
         
         // const googleId = await bcrypt.hash(userPassword, salt);
         const googleId = CryptoJS.AES.encrypt(userPassword, secretKey).toString();

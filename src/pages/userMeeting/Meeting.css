@@ -392,6 +392,9 @@
     .user-meeting-page-top-bar-wrapper{
         gap: 8%;
     }
+    .user-meeting-page-top-wrapper, .meeting-notification, .user-meeting-tab-preview{
+        width: 95%;
+    }
 
 
 

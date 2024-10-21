@@ -6,6 +6,7 @@ const salt = 10;
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
+    // res.send('login')
     const { userEmail, userPassword, profileImg, isGoogleLogin } = req.body;
     console.log(userEmail, userPassword, profileImg, isGoogleLogin);
 

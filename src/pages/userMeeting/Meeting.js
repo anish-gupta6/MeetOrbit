@@ -49,6 +49,7 @@ const Meeting = () => {
       },2*60*1000)
     }
   },[isNotificationActive])
+  
   return (
     <div>
         <div className="user-meeting-page-main-container">

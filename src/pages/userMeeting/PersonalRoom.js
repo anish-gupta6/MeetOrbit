@@ -10,23 +10,50 @@ import {ContentLoaderSkeleton} from './LoaderSkeleton'
 const PersonalRoom = () => {
     const navigate = useNavigate();
     const {userInfo,isLoading} = useContext(userContext);
-    const meetingId = userInfo.meetingId;
-    const meetingPassword = userInfo.meetingPassword
+    // const meetingId = userInfo.meetingId;
+    // const meetingPassword = userInfo.meetingPassword
     const hiddenPassword = '******'
     const [isPass,setIsPass] = useState(false)
     const [optionVisible,setOptionVisible] = useState(false)
     const [linkCopied,setLinkCopied] = useState(false)
     const {notifySuccess} = useToast();
   const [loading,setLoading] = useState(true)
+  const [userDetail,setUserDetail] = useState({})
+  const [meetingId,setMeetingId] = useState('')
+  const [meetingPassword,setMeetingPassword] = useState('')
 
   
+  
+
   useEffect(()=>{
-    if(!isLoading){
-    setTimeout(()=>{
-      setLoading(false)
-    },400)
+    const fetchUserDetails = async () =>{
+        try{
+            
+        const response = await fetch(`http://localhost:5000/api/auth/getUser/${userInfo.userId}`)
+        if(response.ok){
+            const data = await response.json();
+            setUserDetail(data.userData)
+            if(!isLoading){
+              setTimeout(()=>{
+                setLoading(false)
+              },400)
+            }
+        }
+    } catch(err){
+        console.log(err)
+    }
+}
+    if(userInfo){
+        fetchUserDetails();
+    }
+},[userInfo,isLoading])
+
+useEffect(()=>{
+  if(userDetail){
+    setMeetingId(userDetail.meetingId)
+    setMeetingPassword(userDetail.meetingPassword)
   }
-  },[isLoading])
+},[userDetail])
 
     const handleCopyLink = (data) =>{
       navigator.clipboard.writeText(data).then(
@@ -47,7 +74,7 @@ const PersonalRoom = () => {
       navigate(`/meeting/room/start/j?id=${meetingId}&pwd=${encodeURIComponent(encMeetingPassword)}`);
     }
 
-
+    
 
   return (
     <div>
@@ -59,7 +86,7 @@ const PersonalRoom = () => {
                 <div className="personal-room-details-table">
                 <div className='personal-room-table-row'>
                   <div className="room-detail-table-column detail-column-1" style={{fontSize:'18px',fontWeight:'600',color:'#333'}}>Title</div>
-                  <div className="room-detail-table-column detail-column-2" style={{fontSize:'18px',fontWeight:'600',color:'#333'}}>{userInfo.userName}'s Personal Meeting Room</div>
+                  <div className="room-detail-table-column detail-column-2" style={{fontSize:'18px',fontWeight:'600',color:'#333'}}>{userDetail.userName}'s Personal Meeting Room</div>
                 </div>
                 <div className='personal-room-table-row'>
                   <div className="room-detail-table-column detail-column-1">Meeting ID</div>
@@ -71,7 +98,7 @@ const PersonalRoom = () => {
                 </div>
                 <div className='personal-room-table-row'>
                   <div className="room-detail-table-column detail-column-1">Invite Link</div>
-                  <div className="room-detail-table-column detail-column-2"><Link to='http://localhost:3000/home/meeting' className="column-link">{userInfo.meetingLink}</Link> <div className="room-meetingId-copy-btn" onClick={()=>handleCopyLink(userInfo.meetingLink)}>{linkCopied ? <PiCheck color='#0e72ed'/> :<PiCopyFill/>}</div></div>
+                  <div className="room-detail-table-column detail-column-2"><Link to={userDetail.meetingLink} className="column-link">{userDetail.meetingLink}</Link> <div className="room-meetingId-copy-btn" onClick={()=>handleCopyLink(userInfo.meetingLink)}>{linkCopied ? <PiCheck color='#0e72ed'/> :<PiCopyFill/>}</div></div>
                 </div>
                 <div className='personal-room-table-row'>
                   <div className="room-detail-table-column detail-column-1">Options</div>
