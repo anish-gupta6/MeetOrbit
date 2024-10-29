@@ -1,6 +1,8 @@
 import React,{useState} from 'react'
 import {PiMicrophone, PiMicrophoneSlash, PiVideoCamera, PiVideoCameraSlash, PiUsersThree, PiChats, PiDotsThreeCircle, PiMonitorArrowUpFill} from "react-icons/pi";
+import { LuMonitorUp,LuMonitorX } from "react-icons/lu";
 import {useRoomContext} from '../contexts/RoomContextPro'
+import { TbScreenShare } from 'react-icons/tb';
 
 const RoomBottomBar = () => {
 
@@ -20,7 +22,7 @@ const RoomBottomBar = () => {
             <button className="bottom-bar-button all-btn" onClick={handleMicClick}>{isMicOn ? <><div className="bottom-bar-icon"><PiMicrophone /> </div> Mute</> : <><div className="bottom-bar-icon icon-off"><PiMicrophoneSlash /></div> Unmute</>}</button>
             <button className="bottom-bar-button all-btn" onClick={handleVideoClick}>{isVideoOn ? <><div className="bottom-bar-icon"><PiVideoCamera /> </div> Close Video </> : <><div className="bottom-bar-icon icon-off"><PiVideoCameraSlash /></div> Start Video</>}</button>
             {/* <button className="bottom-bar-button all-btn" onClick={''}><div className="bottom-bar-icon icon-color"><PiMonitorArrowUpFill /> </div> Share Screen</button> */}
-            <button className="bottom-bar-button all-btn" onClick={isScreenSharing?handleStopScreenShare:handleStartScreenShare}><div className="bottom-bar-icon icon-color"><PiMonitorArrowUpFill /> </div> {isScreenSharing?'Stop Sharing':'Share Screen'}</button>
+            <button className="bottom-bar-button all-btn" onClick={isScreenSharing?handleStopScreenShare:handleStartScreenShare}><div className="bottom-bar-icon icon-color">{isScreenSharing?<LuMonitorX style={{color:'red'}}/>:<LuMonitorUp/>} </div> {isScreenSharing?'Stop Share':'Share Screen'}</button>
             <button className="bottom-bar-button all-btn" onClick={handleOpenParticipant}><div className="bottom-bar-icon"><PiUsersThree /> </div> Participants</button>
             <button className="bottom-bar-button chat-btn" onClick={handleOpenChat}><div className="bottom-bar-icon"><PiChats /> </div> Chat</button>
             <button className="bottom-bar-button all-btn" onClick={stopMedia} ><div className="bottom-bar-icon"><PiDotsThreeCircle /> </div> More</button>

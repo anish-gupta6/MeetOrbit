@@ -46,7 +46,7 @@ const PersonalRoom = () => {
     if(userInfo){
         fetchUserDetails();
     }
-},[userInfo,isLoading])
+},[])
 
 useEffect(()=>{
   if(userDetail){

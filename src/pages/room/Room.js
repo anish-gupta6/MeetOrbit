@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import { useLocation } from 'react-router-dom';
 import './Room.css';
 import { useRoomContext } from '../../components/contexts/RoomContextPro';
+import { useSocket } from '../../components/contexts/SocketProvider';
 import ChatBox from '../../components/chatBox/ChatBox';
 import ParticipantBox from '../../components/participantsBox/ParticipantBox';
 import VideoGrid from '../../components/videoStream/VideoGrid';
@@ -11,7 +12,7 @@ import {ReactComponent as RoomConnecting} from '../../assets/roomConnecting-svg.
 import CryptoJS from 'crypto-js'
 
 const Room = () => {
-  // const { socket } = useSocket();
+  const { endPoint } = useSocket();
   
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -21,13 +22,24 @@ const Room = () => {
 
   const {roomStates,setRoomStates} = useRoomContext();
   const {me,isHovered,isChatOpen,isParticipantOpen} = roomStates;
-  const {setIsMicOn,setIsVideoOn,setIsHovered,setIsVisible,setMeetingDetails,setUserInfo,setUserName,setMeetingId,setMeetingPassword} = setRoomStates;
+  const {setIsMicOn,setIsVideoOn,setIsHovered,setIsVisible,setMeetingDetails,setColorId,setUserInfo,setUserName,setMeetingId,setMeetingPassword} = setRoomStates;
 
+  
+  
+  const getColorId = () =>{
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  
   useEffect(() => {
-    setUserInfo(userInfo)
-    setIsMicOn(isMicOn)
-    setIsVideoOn(isVideoOn)
-    setUserName(userName || userInfo.meetingName)
+    setColorId(userInfo.colorId || getColorId());
+    setIsMicOn(isMicOn!==undefined ? isMicOn : false)
+    setIsVideoOn(isVideoOn!==undefined ? isVideoOn : true)
+    setUserName(userName?userName:userInfo.userName)
     const secretKey = 'zoomClone'
     const bytes =  CryptoJS.AES.decrypt(meetingPassword, secretKey);
     const decMeetingPassword = bytes.toString(CryptoJS.enc.Utf8);
@@ -59,7 +71,7 @@ const Room = () => {
   useEffect(()=>{
     const fetchMeetingInfo = async () =>{
       try{
-      const response = await fetch(`https://meetorbit-backend.onrender.com/getMeetingInfo/${meetingId}`)
+      const response = await fetch(`${endPoint}/getMeetingInfo/${meetingId}`)
       if(response.ok){
         const data = await response.json();
         console.log(data.meetingInfo)

@@ -7,7 +7,7 @@ const UserContext = createContext()
 const AuthContext = ({children}) => {
     // const [profileImg,setProfileImg]=useState('https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png')
     const navigate = useNavigate();
-    const backend = 'https://meetorbit-1.onrender.com'
+    const backend = 'http://localhost:5000'
     
 
     const saveUserData = (userData) =>{

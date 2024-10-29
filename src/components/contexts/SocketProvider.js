@@ -7,16 +7,17 @@ const SocketContext = createContext(null);
 let socket;
 export const getSocket = () => {
   if (!socket) {
-    socket = io.connect("https://meetorbit-backend.onrender.com");
+    socket = io.connect("http://localhost:3001");
   }
   return socket;
 };
 
 
 export const SocketProvider = (props) => {
+  const endPoint = 'http://localhost:3001';
 
   const socket = useMemo(() => getSocket(), []);
-
+  console.log(socket)
   // const socket = useMemo(() => io.connect("http://localhost:3001"), []);
   // useEffect(() => {
   //   return () => {
@@ -25,7 +26,7 @@ export const SocketProvider = (props) => {
   // }, [socket]);
 
   return (
-    <SocketContext.Provider value={{socket}}>
+    <SocketContext.Provider value={{socket,endPoint}}>
       {props.children}
     </SocketContext.Provider>
   );

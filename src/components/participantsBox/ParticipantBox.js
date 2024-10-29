@@ -2,8 +2,10 @@ import React, { useState,useEffect } from 'react'
 import './ParticipantBox.css'
 import { PiMicrophoneBold, PiMicrophoneSlashBold, PiVideoCameraBold, PiVideoCameraSlashBold, PiXBold } from 'react-icons/pi'
 import {useRoomContext} from '../contexts/RoomContextPro'
+import {useSocket} from '../contexts/SocketProvider'
 
 const ParticipantBox = () => {
+  const {endPoint} = useSocket();
   const {roomHandlers,roomStates,setRoomStates} = useRoomContext();
   const {handleOpenParticipant} = roomHandlers;
   const {meetingId,participants,me,isMicOn,isVideoOn} = roomStates;
@@ -13,7 +15,7 @@ const ParticipantBox = () => {
 
     const fetchParticipants = async () => {
     try{
-    const response = await fetch(`https://meetorbit-backend.onrender.com/meeting/${meetingId}/participants`);
+    const response = await fetch(`${endPoint}/meeting/${meetingId}/participants`);
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);

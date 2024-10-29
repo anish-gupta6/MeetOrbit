@@ -236,7 +236,7 @@
   /* border: 1px solid red; */
   transition: all 0.2s ease;
 }
-.carousel-container.hovered{
+.carousel-container.hovered,.pinned-video-grid.hovered{
   height: 82vh;
   margin-top: 55px;
 }
@@ -448,13 +448,14 @@
   height: 90vh;
   margin: 0 auto;
   margin-top: 35px;
-  /* border: 1px solid green; */
+  position: relative;
   transition: all 0.2s ease;
 }
 .pinned-video-grid.hovered{
   height: 82vh;
   margin-top: 55px;
 }
+
 .pinned-video-container{
   width: 80%;
   height: 100%;
@@ -591,6 +592,10 @@
     height: 82vh;
     margin-top: 55px;
   }
+  /* .pinned-video-grid{
+    flex-direction: column;
+    
+  } */
   /* .carousel-slide {
     
   } */
@@ -747,8 +752,13 @@
 .chatBox{
   right: -100%;
 }
-.chatBox.open{
+/* .chatBox.open{
   right: 10px;
   
+} */
+.chatBox.open, .participantBox.open{
+  right: 10px;
+  bottom: 10%;
+  opacity: 1;
 }
 }

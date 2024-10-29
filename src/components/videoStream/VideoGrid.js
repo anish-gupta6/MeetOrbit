@@ -61,7 +61,9 @@ const VideoGrid = () => {
   return (
     <div>
       {pinnedStream && isPinned &&(
-        <div className="pinned-video-grid">
+        <div className={`pinned-video-grid ${isVisible? 'hovered':''}`}>
+          
+
         <div className="pinned-video-container">
           <video
             autoPlay
@@ -127,6 +129,7 @@ const VideoGrid = () => {
 
 {!isPinned &&(<>
       <div className={`carousel-container ${isVisible? 'hovered':''}`}>
+      
         {slides.length > 1 && currentIndex > 0 &&(<button className={`carousel-button prev-button ${isVisible?'active':'inactive'}`} onClick={goToPrevious}>
           <PiCaretLeftBold/>
           </button> )}

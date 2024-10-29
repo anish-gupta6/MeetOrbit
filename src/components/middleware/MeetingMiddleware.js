@@ -4,9 +4,11 @@ import {useLocation,useParams,useNavigate} from 'react-router-dom'
 import CryptoJS from 'crypto-js'
 import './MeetingMiddleware.css'
 import {userContext} from '../../App'
+import {useSocket} from '../contexts/SocketProvider'
 
 const MeetingMiddleware = () => {
   const {userInfo} = useContext(userContext)
+  const {endPoint} = useSocket();
   const [isLoading,setIsLoading] = useState(false);
   // const [meetingId,setmeetingId] = useState('')
   const [meetingPassword,setMeetingPassword] = useState('')
@@ -17,21 +19,21 @@ const MeetingMiddleware = () => {
     const queryParams = new URLSearchParams(location.search);
     const meetingId = queryParams.get('id');
     const roomPassword = decodeURIComponent(queryParams.get('pwd'));
-    const {isMicOn,isVideoOn,userName} = location.state || '';
+    const {isMicOn,isVideoOn,userName,meetingTitle} = location.state || '';
     const {mode}=useParams();
 
 
 
     const handleCreateRoom = async () => {
       if(meetingId && meetingPassword){
-        console.log(meetingId,meetingPassword)
+        console.log(meetingId,meetingPassword,meetingTitle)
       try{
-        const response = await fetch('https://meetorbit-backend.onrender.com/meeting/create-room',{
+        const response = await fetch(`${endPoint}/meeting/create-room`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({meetingId, meetingPassword, userId:userInfo.userId,userName:userInfo.userName})
+            body: JSON.stringify({meetingId, meetingPassword, meetingTitle, userId:userInfo.userId,userName:userInfo.userName})
         });
         if(response.ok){
           console.log('true')
@@ -54,7 +56,7 @@ const MeetingMiddleware = () => {
       if(meetingId && meetingPassword){
         console.log(meetingId,meetingPassword)
       try{
-        const response = await fetch('https://meetorbit-backend.onrender.com/meeting/join-room',{
+        const response = await fetch(`${endPoint}/meeting/join-room`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

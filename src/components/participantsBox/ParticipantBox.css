@@ -79,8 +79,8 @@
     border-radius: 50%;
     height: 30px;
     width: 30px;
-    background-color: #03fc5e;
     color: white;
+    user-select: none;
 }
 .participant-name{
     color: #555;
@@ -95,4 +95,10 @@
     font-size: 20px;
     /* color: rgba(251, 128, 107, 0.862); */
     cursor: pointer;
+}
+
+@media screen and (max-width:520px) {
+    .participantbox-main-container{
+        height: 75vh;
+    }
 }

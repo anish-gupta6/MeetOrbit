@@ -50,10 +50,10 @@ let roomDeletionTimers = {};  // Store timers for rooms with no participants
 
 // Route to create a room
 app.post('/meeting/create-room', (req, res) => {
-  const { meetingId, meetingPassword, userId,userName } = req.body;
+  const { meetingId, meetingPassword, meetingTitle, userId,userName } = req.body;
   console.log(meetingId, meetingPassword, userId,userName)
   if(!meetingRooms[meetingId]){
-  meetingRooms[meetingId] = {title:'title', meetingPassword: meetingPassword, participants: [],isScreenSharing:false,screenSharer:'', startTime:new Date(Date.now()), endTime:'', createdBy: {userId,userName} };
+  meetingRooms[meetingId] = {title:meetingTitle, meetingPassword: meetingPassword, participants: [],isScreenSharing:false,screenSharer:'', startTime:new Date(Date.now()), endTime:'', createdBy: {userId,userName} };
   roomChats[meetingId] = [];
   console.log('Room created',meetingId)
   console.log(meetingRooms[meetingId].startTime)
@@ -108,6 +108,7 @@ const saveMeeting = async (room,meetingId,lastTime) =>{
     endTime,
     duration
 };
+console.log(recentMeeting)
   try {
     await MeetingDetails.findOneAndUpdate(
         { userId,meetingId }, 
@@ -213,15 +214,29 @@ io.on('connection', (socket) => {
       const room = meetingRooms[meetingId]
       const participant = room.participants.find((p) => p.userId === userId)
       participant.videoStatus = videoStatus;
-      console.log('video',room)
+      // console.log('video',room)
       io.to(meetingId).emit('video-status-changed', { userId ,videoStatus });
     });
     socket.on('mic-status-change', ({ meetingId, userId ,micStatus}) => {
       const room = meetingRooms[meetingId]
       const participant = room.participants.find((p) => p.userId === userId)
       participant.micStatus = micStatus;
-      console.log('mic',room)
+      // console.log('mic',room)
       io.to(meetingId).emit('mic-status-changed', { userId ,micStatus });
+    });
+
+    socket.on('stream-media-update', ({ meetingId, userId}) => {
+      const room = meetingRooms[meetingId]
+      const participant = room.participants.find((p) => p.userId === userId)
+      if (participant) {
+        micStatus = participant.micStatus;
+        videoStatus = participant.videoStatus;
+        console.log('media', room);
+        io.to(meetingId).emit('mic-status-changed', { userId, micStatus});
+        io.to(meetingId).emit('video-status-changed', { userId, videoStatus});
+      } else {
+        console.log(`Participant with userId ${userId} not found in room ${meetingId}`);
+      }
     });
 
 

@@ -39,7 +39,7 @@
 .user-profile-img-cntnr{
     height: 80px;
     width: 80px;
-    border-radius: 50%;
+    border-radius: 50% !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -58,10 +58,23 @@
     color: black;
     cursor: pointer;
 }
+.skeleton-user-name{
+    width: 150px;
+    height: 30px;
+}
 .user-profile-user-plan{
     font-size: 14px;
     color: #777;
     font-weight: 500;
+}
+.skeleton-user-plan{
+    width: 120px;
+    height: 20px;
+    margin-top: 8px;
+}
+.skeleton-plan-btn{
+    width: 100px;
+    height: 30px;
 }
 .user-profile-plan-btn,.meeting-session-media-test{
     width: fit-content;
@@ -87,6 +100,9 @@
     background-color: #f7f9fa;
     padding: 10px 15px 15px 15px;
     border-radius: 8px;
+}
+.skeleton-plan-wrapper{
+    height: 110px;
 }
 .user-profile-plan-list{
     display: flex;
@@ -121,10 +137,14 @@
 }
 .dashboard-home-user-activity-cntnr{
     width: 100%;
+    max-height: 500px;
     background-color: white;
     padding: 25px;
     border-radius: 8px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.skeleton-activity-cntnr{
+    height: 500px;
 }
 .user-activity-header-cntnr{
     font-size: 24px;
@@ -132,17 +152,30 @@
     padding-bottom: 10px;
     border-bottom: 2px solid whitesmoke;
 }
+.skeleton-header{
+    width: 180px;
+    height: 40px;
+    border: none;
+    padding-bottom: 0;
+}
+.skeleton-border{
+    margin-top: 10px;
+    border-bottom: 2px solid whitesmoke;
+}
 .user-activity-items-cntnr{
     display: flex;
     flex-direction: column;
     position: relative;
-    /* align-items: center;
-    justify-content: center; */
+    height: 86%;
+    min-height: 200px;
+    overflow-y: scroll;
     border-radius: 8px;
     background-color: #f7f9fa;
     padding: 4px;
-    min-height: 200px;
     margin-top: 20px;
+}
+.user-activity-items-cntnr.skeleton{
+    height: 84%;
 }
 
 
@@ -190,6 +223,12 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    
+}
+.skeleton-meeting-option{
+    height: 50px;
+    width: 50px;
+    border-radius: 15px !important;
 }
 .dashboard-home-meeting-option-icon{
     display: flex;
@@ -219,6 +258,10 @@
     color: #666;
     user-select: none;
 }
+.skeleton-option-title{
+    width: 50px;
+    height: 12px;
+}
 
 .dashboard-home-personal-meeting-details{
     display: flex;
@@ -226,9 +269,16 @@
     gap: 4px;
     align-items: center;
 }
+.skeleton-details{
+    gap: 15px;
+}
 .personal-meeting-detail-heading{
     font-size: 18px;
     font-weight: 600;
+}
+.skeleton-detail-heading{
+    width: 200px;
+    height: 25px;
 }
 .personal-meeting-meetingId{
     display: flex;
@@ -236,6 +286,10 @@
     gap: 10px;
     font-size: 16px;
     color: #555;
+}
+.skeleton-meetingId{
+    width: 130px;
+    height: 20px;
 }
 .meetingId-copy-btn{
     display: flex;
@@ -245,6 +299,10 @@
     cursor: pointer;
     padding: 5px;
     border-radius: 4px;
+}
+.skeleton-copy-btn{
+    width: 20px;
+    height: 20px;
 }
 .meetingId-copy-btn:hover{
     background-color: whitesmoke;
@@ -270,11 +328,19 @@
     font-size: 24px;
     font-weight: 600;
 }
+.skeleton-session-heading{
+    width: 150px;
+    height: 30px;
+}
 .meeting-session-link-heading{
     font-size: 12px;
     text-decoration: none;
     color: var(--primary_color);
     font-weight: 600;
+}
+.skeleton-link-heading{
+    width: 60px;
+    height: 18px;
 }
 .meeting-session-link-heading:hover{
     text-decoration: underline;
@@ -284,11 +350,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80px;
+    min-height: 100px;
     padding: 10px;
     border-radius: 8px;
 }
 .meeting-session-media-test{
+    margin: 0 auto;
+}
+.skeleton-media-test{
+    width: 130px;
+    height: 30px;
     margin: 0 auto;
 }
 
@@ -306,11 +377,20 @@
     font-size: 24px;
     font-weight: 600;
 }
+.skeleton-header-cntnr{
+    width: 100%;
+    height: 50px;
+}
 .plan-feature-items-cntnr{
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-top: 25px;
+}
+.skeleton-items-cntnr{
+    width: 100%;
+    height: 170px;
+    margin-top: 20px;
 }
 .plan-feature-items{
     display: flex;
@@ -330,6 +410,11 @@
     padding: 6px 15px;
     margin: 20px auto 0 auto;
     text-decoration: none;
+}
+.skeleton-upgrade-btn{
+    width: 150px;
+    height: 35px;
+    margin: 15px auto 0 auto;
 }
 .plan-feature-view-all{
     margin: 10px auto 0 auto;

@@ -7,7 +7,6 @@
     /* border-radius: 12px; */
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-  /* z-index: 10; */
     
 }
 .chatbox-top-nav{
@@ -151,3 +150,9 @@
 /* .scroll-to-bottom-btn:hover {
    top: 2px;
 } */
+
+@media screen and (max-width:520px) {
+    .chatbox-main-container{
+        height: 75vh;
+    }
+}

@@ -12,33 +12,33 @@ const RoomContextPro = ({children}) => {
   const navigate = useNavigate();
   const mediaStreamRef = useRef(null);
   const peersRef = useRef([]);
-  // const peerRef = useRef(null);
-  const [streams, setStreams] = useState([]);
-  const [isMicOn, setIsMicOn] = useState(true); 
-  const [isVideoOn, setIsVideoOn] = useState(true); 
-  const [isHovered, setIsHovered] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-  const [meetingDetails, setMeetingDetails] = useState({});
-  const [userInfo, setUserInfo] = useState({});
+  const screenShareRef = useRef(null);
+  const currentStreamRef = useRef(null);
+  
   const [userName, setUserName] = useState('');
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isParticipantOpen, setIsParticipantOpen] = useState(false);
+  const [colorId, setColorId] = useState('');
   const [meetingId, setMeetingId] = useState('');
   const [meetingPassword, setMeetingPassword] = useState('');
+  const [meetingDetails, setMeetingDetails] = useState({});
   const [me, setMe] = useState('');
+  const [userInfo, setUserInfo] = useState({});
+
+
+  const [isMicOn, setIsMicOn] = useState(false); 
+  const [isVideoOn, setIsVideoOn] = useState(true); 
+  const [streams, setStreams] = useState([]);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isParticipantOpen, setIsParticipantOpen] = useState(false);
   const [chatHistory, setChatHistory] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
-  // const [screenShareStream, setScreenShareStream] = useState(null);
-  const screenShareRef = useRef(null);
-  const currentStreamRef = useRef(null);
   const [isConnected,setIsConnected] = useState(false);
-  // const [pinnedStream, setPinnedStream] = useState({}); // Add this state
 
 
 
   const {notifyWarning,notifyError} = useToast()
-
 
 
   const handleOpenChat = () => {
@@ -136,8 +136,9 @@ const RoomContextPro = ({children}) => {
   const handlePeerOpen = useCallback((id,stream) =>{
     console.log('Peer ID:', id);
     setMe(id);
-    socket.emit('join-room', { meetingId, meetingPassword, userId: id, userName, colorId:userInfo.colorId,micStatus:isMicOn,videoStatus:isVideoOn, isHost: true });
-    handleAddStream(stream,id,userName,userInfo.colorId,isMicOn,isVideoOn)
+    socket.emit('join-room', { meetingId, meetingPassword, userId: id, userName, colorId,micStatus:isMicOn,videoStatus:isVideoOn, isHost: true });
+    handleAddStream(stream,id,userName,colorId,isMicOn,isVideoOn)
+    toggleMedia();
   },[socket, meetingId, meetingPassword]);
 
   
@@ -202,7 +203,19 @@ const handleStopScreenShare = () => {
 };
 
 
+const streamMediaUpdate = (userId) =>{
+  // setTimeout(()=>{
+  socket.emit('stream-media-update',{ meetingId, userId})
+// },500)
+}
 
+const toggleMedia = () =>{
+  if (mediaStreamRef.current) {
+    const stream = mediaStreamRef.current;
+    stream.getAudioTracks().forEach(track => track.enabled = isMicOn);
+    stream.getVideoTracks().forEach(track => track.enabled = isVideoOn);
+  }
+}
 
 
 useEffect(()=>{
@@ -219,25 +232,29 @@ useEffect(()=>{
   // },[])
   
   useEffect(() => {
+    if(userName && colorId){
       const peer = new Peer();
+      console.log(peer)
       
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
       mediaStreamRef.current = stream;
       currentStreamRef.current = stream;
+      console.log(currentStreamRef.current)
       // setCurrentVideoStream(stream);
 
       peer.on('open', (id) => handlePeerOpen(id,currentStreamRef.current));
 
       socket.on('user-connected', (data) => {
-        console.log('User connected:', data.userId);
+        console.log('User connected:', data);
 
         if (data.userId === peer.id) return; 
-
+        
         const call = peer.call(data.userId, currentStreamRef.current,{
           metadata: {
             userId: peer.id,
             userName,
-            colorId: userInfo.colorId,
+            colorId,
             micStatus: isMicOn,
             videoStatus: isVideoOn
           }
@@ -248,7 +265,10 @@ useEffect(()=>{
           return;
         }
 
-        call.on('stream', (userStream) => handleAddStream(userStream, data.userId, data.userName, data.colorId, data.micStatus, data.videoStatus));
+        call.on('stream', (userStream) => {
+          handleAddStream(userStream, data.userId, data.userName, data.colorId, data.micStatus, data.videoStatus);
+          // streamMediaUpdate(peer.id);
+        });
 
         call.on('close', () => {
           setStreams(prevStreams => prevStreams.filter(stream => stream.userId !== data.userId));
@@ -262,9 +282,11 @@ useEffect(()=>{
         if (call.peer === peer.id) return
     
         call.answer(currentStreamRef.current);
-        const { userId, userName, colorId, micStatus, videoStatus } = call.metadata || {};
-
-        call.on('stream', (userStream) => handleAddStream(userStream, userId, userName, colorId, micStatus, videoStatus));
+        const metadata = call.metadata || {};
+        call.on('stream', (userStream) => {
+          handleAddStream(userStream, metadata.userId, metadata.userName, metadata.colorId, metadata.micStatus, metadata.videoStatus)
+          streamMediaUpdate(metadata.userId);
+        });
 
         call.on('close', () => {
           setStreams(prevStreams => prevStreams.filter(stream => stream.userId !== call.peer));
@@ -289,6 +311,7 @@ useEffect(()=>{
             stream.userId === userId ? { ...stream, videoStatus } : stream
           )
         );
+        console.log('video')
       });
       socket.on('mic-status-changed', ({ userId, micStatus }) => {
         setStreams(prevStreams =>
@@ -296,6 +319,7 @@ useEffect(()=>{
             stream.userId === userId ? { ...stream, micStatus } : stream
           )
         );
+        console.log('microphone')
       });
 
       socket.on('user-disconnected', (userId) => handleSocketDisconnect(userId));
@@ -303,8 +327,10 @@ useEffect(()=>{
     }).catch((err) => {
       console.error('Error accessing media devices:', err);
     });
+  } else {
+    console.error('getUserMedia() is not supported in this browser.');
+  }
     
-
     return () => {
       if (mediaStreamRef.current) {
         mediaStreamRef.current.getTracks().forEach(track => track.stop());
@@ -319,24 +345,15 @@ useEffect(()=>{
       socket.off('video-status-changed');
       socket.off('mic-status-changed');
     };
-  // }
-  }, [meetingId, meetingPassword, socket]);
+  }
+  }, [userName,colorId,meetingId, meetingPassword, socket]);
 
 
   useEffect(() => {
-    if (mediaStreamRef.current) {
-      const stream = mediaStreamRef.current;
-      stream.getAudioTracks().forEach(track => track.enabled = isMicOn);
-      stream.getVideoTracks().forEach(track => track.enabled = isVideoOn);
-    }
+    toggleMedia();
   }, [isMicOn,isVideoOn]);
-  useEffect(() => {
-    if (mediaStreamRef.current) {
-      const stream = mediaStreamRef.current;
-      stream.getAudioTracks().forEach(track => track.enabled = isMicOn);
-      // stream.getVideoTracks().forEach(track => track.enabled = isVideoOn);
-    }
-  }, []);
+  
+  
 
 
 
@@ -350,6 +367,7 @@ useEffect(()=>{
     isVisible,
     meetingDetails,
     userInfo,
+    colorId,
     userName,
     isChatOpen,
     isParticipantOpen,
@@ -368,6 +386,7 @@ useEffect(()=>{
     setIsVisible,
     setMeetingDetails,
     setUserInfo,
+    setColorId,
     setUserName,
     setIsChatOpen,
     setIsParticipantOpen,
@@ -403,6 +422,4 @@ useEffect(()=>{
 
 export default RoomContextPro
 
-export const useRoomContext=()=>{
-  return useContext(MeetingContext)
-}
+export const useRoomContext=()=> useContext(MeetingContext)

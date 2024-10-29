@@ -31,6 +31,7 @@ import NotePreview from './pages/userNotes/NotePreview';
 import NoteEditor from './pages/userNotes/NoteEditor';
 import CryptoJS from 'crypto-js'
 import AppLoader from './components/appLoader/AppLoader';
+import LaunchLobby from './pages/lobby/LaunchLobby';
 
 
 const useAuth = () => {
@@ -60,7 +61,7 @@ const HasAuth = ({ children }) => {
 export const userContext = createContext(null)
 
 function App() {
-  const backend = 'https://meetorbit-1.onrender.com'
+  const backend = 'http://localhost:5000'
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const secretKey = 'zoomClone';
@@ -103,6 +104,7 @@ function App() {
         <Route exact path='/forgot-password/reset' element={<HasAuth><ResetForgotPassword/></HasAuth>}/>
         <Route exact path='/join-meeting' element={<JoinMeeting/>}/>
         <Route exact path='/meeting/room/wr' element={<MeetingLobby/>}/>
+        <Route exact path='/meeting/room/launch' element={<LaunchLobby/>}/>
         
         {/* <Route exact path='/meeting/room/:mode/j' element={<MeetingMiddleware/>} />
         <Route exact path='/meeting/room/s' element={<RoomContextPro><Room/></RoomContextPro>} /> */}

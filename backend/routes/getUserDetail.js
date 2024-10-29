@@ -7,6 +7,7 @@ router.get('/getUser/:userId', async (req, res) => {
     console.log(userId)
 
     const user = await User.findOne({ userId });
+    console.log(user)
     if(user){
         const meetingInfo = await MeetingDetails.findOne({userId});
         const userData = { ...user.toObject(), ...meetingInfo.toObject() };

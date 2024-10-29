@@ -10,16 +10,16 @@ import {userContext} from '../../App'
 
 const MeetingLobby = () => {
   const {userInfo} = useContext(userContext)
-  const [userName,setUserName] = useState(userInfo.userName);
+  const [userName,setUserName] = useState(userInfo?.userName || ' ');
   const [isMicOn,setIsMicOn] = useState(true);
   const [isVideoOn,setIsVideoOn] = useState(true);
   const userStreamRef = useRef(null);
   const streamRef = useRef(null); 
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-    const roomId = queryParams.get('id');
-    const roomPassword = decodeURIComponent(queryParams.get('pwd'));
+  const roomId = queryParams.get('id');
+  const roomPassword = decodeURIComponent(queryParams.get('pwd'));
   const {notifyWarning} = useToast();
 
   const handleToggleMic = () => {
@@ -28,17 +28,6 @@ const MeetingLobby = () => {
 
   const handleToggleVideo = () => {
     setIsVideoOn((prev) => !prev);
-    // if (streamRef.current && userStreamRef.current) {
-      
-    //   if (isVideoOn) {
-    //     userStreamRef.current.srcObject = null;
-    //     // streamRef.current.getVideoTracks().forEach(track => track.enabled = isVideoOn);
-    //     userStreamRef.current.poster = videoThumbnail;
-    //   } else {
-    //     userStreamRef.current.srcObject = streamRef.current;
-    //     userStreamRef.current.play();
-    //   }
-    // }
   };
 
   useEffect(() => {
@@ -58,9 +47,6 @@ const MeetingLobby = () => {
   const handleJoinRoom = (e) =>{
     e.preventDefault();
     console.log(isMicOn,isVideoOn)
-    // const secretKey = 'zoomClone'
-    // const bytes =  CryptoJS.AES.decrypt(roomPassword, secretKey);
-    // const meetingPassword = bytes.toString(CryptoJS.enc.Utf8);
     if(!userName){
       notifyWarning('Enter you name !!');
       return

@@ -2,6 +2,7 @@ import React, { useEffect, useState,useRef } from 'react'
 import './ChatBox.css'
 import {PiArrowDownBold, PiPaperPlaneRightFill, PiXBold } from 'react-icons/pi'
 import {useRoomContext} from '../contexts/RoomContextPro'
+import {useSocket} from '../contexts/SocketProvider'
 
 const ChatBox = () => {
     const [messageContent,setMessageContent]=useState('');
@@ -11,6 +12,7 @@ const ChatBox = () => {
     const {setChatHistory} = setRoomStates;
     const chatWrapperRef = useRef(null);
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const {endPoint} = useSocket();
 
     const handleMessageSend = (e) =>{
         e.preventDefault();
@@ -35,7 +37,7 @@ const ChatBox = () => {
     useEffect(()=>{
       const fetchChatHistory = async () => {
       try{
-      const response = await fetch(`https://meetorbit-backend.onrender.com/meeting/${meetingId}/chat`);
+      const response = await fetch(`${endPoint}/meeting/${meetingId}/chat`);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
