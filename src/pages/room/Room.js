@@ -37,9 +37,10 @@ const Room = () => {
   
   useEffect(() => {
     setColorId(userInfo.colorId || getColorId());
-    setIsMicOn(isMicOn!==undefined ? isMicOn : false)
-    setIsVideoOn(isVideoOn!==undefined ? isVideoOn : true)
-    setUserName(userName?userName:userInfo.userName)
+    setIsMicOn(isMicOn?? false)
+    setIsVideoOn(isVideoOn?? true)
+    setUserName(userName?userName:userInfo.meetingName)
+    setUserInfo(userInfo)
     const secretKey = 'zoomClone'
     const bytes =  CryptoJS.AES.decrypt(meetingPassword, secretKey);
     const decMeetingPassword = bytes.toString(CryptoJS.enc.Utf8);

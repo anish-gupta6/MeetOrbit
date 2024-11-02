@@ -83,7 +83,8 @@
     user-select: none;
 }
 .participant-name{
-    color: #555;
+    font-size: 14px;
+    color: #444;
 }
 .participant-media-status,.media-status{
     display: flex;

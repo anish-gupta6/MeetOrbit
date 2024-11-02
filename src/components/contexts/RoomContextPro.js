@@ -34,7 +34,9 @@ const RoomContextPro = ({children}) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [participants, setParticipants] = useState([]);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenLoading, setScreenLoading] = useState(false);
   const [isConnected,setIsConnected] = useState(false);
+  const [isRecording,setIsRecording] = useState(false);
 
 
 
@@ -136,7 +138,7 @@ const RoomContextPro = ({children}) => {
   const handlePeerOpen = useCallback((id,stream) =>{
     console.log('Peer ID:', id);
     setMe(id);
-    socket.emit('join-room', { meetingId, meetingPassword, userId: id, userName, colorId,micStatus:isMicOn,videoStatus:isVideoOn, isHost: true });
+    socket.emit('join-room', { meetingId, meetingPassword, userId: id, userName, colorId,micStatus:isMicOn,videoStatus:isVideoOn});
     handleAddStream(stream,id,userName,colorId,isMicOn,isVideoOn)
     toggleMedia();
   },[socket, meetingId, meetingPassword]);
@@ -155,9 +157,11 @@ const RoomContextPro = ({children}) => {
 // Start screen sharing
 const handleStartScreenShare = async () => {
   try {
+    setScreenLoading(true)
     const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
     screenShareRef.current = screenStream;
     setIsScreenSharing(true);
+    setScreenLoading(false);
     currentStreamRef.current = screenStream;
 
     // // Set the screen sharing stream as pinned
@@ -176,6 +180,8 @@ const handleStartScreenShare = async () => {
 
   } catch (err) {
     console.error('Error sharing screen:', err);
+  }finally {
+    setScreenLoading(false);
   }
 };
 
@@ -226,14 +232,14 @@ useEffect(()=>{
 }
 },[screenShareRef.current])
 
-  // useEffect(()=>{
-  //   const peer = new Peer();
-  //   peerRef.current=peer;
-  // },[])
   
   useEffect(() => {
     if(userName && colorId){
-      const peer = new Peer();
+      const usrId = userInfo.userId;
+      console.log(usrId)
+      const peer = new Peer(usrId,{
+        secure:true
+      });
       console.log(peer)
       
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -354,7 +360,12 @@ useEffect(()=>{
   }, [isMicOn,isVideoOn]);
   
   
-
+const startRecording = () =>{
+  setIsRecording(true)
+}
+const stopRecording = () =>{
+  setIsRecording(false)
+}
 
 
   const roomStates = {
@@ -375,7 +386,9 @@ useEffect(()=>{
     meetingPassword,
     chatHistory,
     participants,
-    isScreenSharing
+    isScreenSharing,
+    screenLoading,
+    isRecording
   }
 
   const setRoomStates = {
@@ -409,7 +422,9 @@ useEffect(()=>{
     handleSendMessage,
     handleStartScreenShare,
     handleStopScreenShare,
-    stopMedia
+    startRecording,
+    stopRecording
+
   }
 
 

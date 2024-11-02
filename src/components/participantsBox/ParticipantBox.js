@@ -10,7 +10,7 @@ const ParticipantBox = () => {
   const {handleOpenParticipant} = roomHandlers;
   const {meetingId,participants,me,isMicOn,isVideoOn} = roomStates;
     const {setParticipants} = setRoomStates;
-
+  const [hosts,setHosts] = useState([]);
   useEffect(()=>{
 
     const fetchParticipants = async () => {
@@ -23,11 +23,12 @@ const ParticipantBox = () => {
 
     const data = await response.json();
 
-    if (Array.isArray(data.participants)) {
+    if (Array.isArray(data.participants) && Array.isArray(data.hosts)) {
       setParticipants(data.participants);
+      setHosts(data.hosts)
     } else {
-      setParticipants([]); // Fallback in case the response is not an array
-      console.error("Chat history is not an array");
+      setParticipants([]);
+      setHosts([])
     }
     }
     catch(err){
@@ -41,6 +42,15 @@ const ParticipantBox = () => {
   }
   
   },[meetingId,participants,isMicOn,isVideoOn])
+
+
+  // Sort participants to ensure 'me' is on top
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (a.userId === me) return -1;
+    if (b.userId === me) return 1;
+    return 0;
+  });
+
   return (
     <div>
       <div className="participantbox-main-container">
@@ -51,11 +61,14 @@ const ParticipantBox = () => {
         </div>
 
         <div className="participantbox-main-wrapper">
-        {participants.map((participant, index) => (
+        {sortedParticipants.map((participant, index) => (
             <div className="participant-wrapper" key={index}>
                 <div className="participant-details">
                     <div className="participant-profile" style={{backgroundColor:`${participant.colorId}`}}>{participant.userName.charAt(0)}</div>
-                    <div className="participant-name">{participant.userName} {me === participant.userId ? '(you)':''}</div>
+                    <div className="participant-desc">
+                      <div className="participant-name">{participant.userName} {me === participant.userId ? '(you)':''}</div>
+                      <div style={{fontSize:'10px',color:'#444',fontWeight:'600'}}>{hosts.includes(participant.userId)?'[ Host ]':''}</div>
+                    </div>
                 </div>
                 <div className="participant-media-status">
                     <div className="mic-status media-status">{participant.micStatus ?<PiMicrophoneBold style={{color:'#666'}}/> :<PiMicrophoneSlashBold style={{color:'tomato'}}/>}</div>

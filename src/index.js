@@ -10,6 +10,8 @@ import { SocketProvider } from './components/contexts/SocketProvider';
 // import { SocketProvider } from './components/contexts/SocketProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+// docxity  777290076207-2gbggpks6vqeusp4lmf8esphgrvcn09t.apps.googleusercontent.com
+// meetorbit  185401706823-nmpme6j4mqd3o0u9qsltekiaqm73savb.apps.googleusercontent.com
 root.render(
   <GoogleOAuthProvider clientId="777290076207-2gbggpks6vqeusp4lmf8esphgrvcn09t.apps.googleusercontent.com">
   <React.StrictMode>

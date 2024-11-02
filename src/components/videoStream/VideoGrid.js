@@ -1,8 +1,9 @@
 import React,{useRef,useEffect,useState} from 'react'
-import { PiCaretLeftBold, PiCaretRightBold, PiMicrophoneSlash, PiPushPinFill, PiPushPinSimpleFill, PiVideoCameraSlash } from 'react-icons/pi';
+import { PiCaretLeftBold, PiCaretRightBold, PiMicrophoneSlash, PiPushPinFill, PiPushPinSimpleFill, PiVideoCameraSlash, PiWarningFill, PiXBold } from 'react-icons/pi';
 import {useRoomContext} from '../contexts/RoomContextPro'
 import videoThumbnail from '../../assets/videoThumbnail.png'
 import { TbPinnedFilled } from 'react-icons/tb';
+import cameraIcon from '../../assets/cameraIcon.png'
 
 const VideoGrid = () => {
 
@@ -11,8 +12,9 @@ const VideoGrid = () => {
     const [pinnedStream, setPinnedStream] = useState({});
     const [isPinned, setIsPinned] = useState(false);
     const [screenSharer,setScreenSharer] = useState('')
-    const {roomStates} = useRoomContext();
-    const {socket,isVisible,streams,isVideoOn,me,isHovered} = roomStates;
+    const {roomStates,roomHandlers} = useRoomContext();
+    const {socket,isVisible,streams,isVideoOn,me,isRecording} = roomStates;
+    const {stopRecording} = roomHandlers;
 
   // Group streams into slides of 4
   const [slides, setSlides] = useState([]);
@@ -60,6 +62,18 @@ const VideoGrid = () => {
 
   return (
     <div>
+      {isRecording && <div className="recording-error-cntnr">
+        <div className="recording-title-cntnr">
+          <div className="recording-title"><img src={cameraIcon} alt="M" style={{width:'25px',height:'25px'}}/>MeetOrbit</div>
+          <div className="error-close-btn" onClick={stopRecording}><PiXBold/></div>
+        </div>
+        <div className="recording-body">
+          <div className="recording-error-logo"><PiWarningFill/></div>
+          <div className="recording-desc">Meeting recording is not supported in web version</div>
+        </div>
+        <div className="error-okay-btn" onClick={stopRecording}>Okay</div>
+      </div>}
+
       {pinnedStream && isPinned &&(
         <div className={`pinned-video-grid ${isVisible? 'hovered':''}`}>
           

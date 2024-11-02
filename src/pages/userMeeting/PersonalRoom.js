@@ -107,11 +107,11 @@ useEffect(()=>{
                    { optionVisible && <div className="room-options-cntnr">
                         <div className="room-option-item">
                             <input type="checkbox" id="anytime-join" className='room-option-checkbox'/>
-                            <label htmlFor="anytime-join" className='room-option-label'>Allow participants to join anytime</label>
+                            <label htmlFor="anytime-join" className='room-option-label'>Don't allow participants join after 10 mins</label>
                         </div>
                         <div className="room-option-item">
                             <input type="checkbox" id="auto-record" className='room-option-checkbox'/>
-                            <label htmlFor="auto-record" className='room-option-label'>Automatically record meeting on the local computer</label>
+                            <label htmlFor="auto-record" className='room-option-label'>Allow participants to record meeting</label>
                         </div>
                         <div className="room-option-item">
                             <input type="checkbox" id="waiting-room" className='room-option-checkbox'/>

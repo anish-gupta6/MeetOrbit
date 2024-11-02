@@ -7,14 +7,15 @@ const SocketContext = createContext(null);
 let socket;
 export const getSocket = () => {
   if (!socket) {
-    socket = io.connect("http://localhost:3001");
+    socket = io.connect("https://meetorbit-backend.onrender.com");
   }
   return socket;
 };
 
 
 export const SocketProvider = (props) => {
-  const endPoint = 'http://localhost:3001';
+  const endPoint = 'https://meetorbit-backend.onrender.com';
+  // const endPoint = 'http://localhost:3001';
 
   const socket = useMemo(() => getSocket(), []);
   console.log(socket)

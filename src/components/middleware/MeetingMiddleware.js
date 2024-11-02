@@ -39,7 +39,7 @@ const MeetingMiddleware = () => {
           console.log('true')
           setIsLoading(true)
           setTimeout(()=>{
-            navigate(`/meeting/room/s?id=${meetingId}&pwd=${encodeURIComponent(roomPassword)}`,{state:{userInfo,isMicOn:true,isVideoOn:true,userName:userInfo.meetingName}});
+            navigate(`/meeting/room/s?id=${meetingId}&pwd=${encodeURIComponent(roomPassword)}`,{state:{userInfo,isMicOn:false,isVideoOn:true,userName:userInfo.meetingName}});
           },3000)
         }
         else{

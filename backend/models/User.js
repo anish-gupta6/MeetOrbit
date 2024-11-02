@@ -28,6 +28,7 @@ const scheduledMeetingSchema = new mongoose.Schema({
     createdAt: {type: Date,default: Date.now},
 })
 const recordingSchema = new mongoose.Schema({
+    recordingId: {type: String,required: true},
     title: {type: String,required: true},
     favourite: {type: Boolean,default: false},
     inTrash: {type: Boolean,default: false},

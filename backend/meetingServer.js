@@ -53,8 +53,9 @@ app.post('/meeting/create-room', (req, res) => {
   const { meetingId, meetingPassword, meetingTitle, userId,userName } = req.body;
   console.log(meetingId, meetingPassword, userId,userName)
   if(!meetingRooms[meetingId]){
-  meetingRooms[meetingId] = {title:meetingTitle, meetingPassword: meetingPassword, participants: [],isScreenSharing:false,screenSharer:'', startTime:new Date(Date.now()), endTime:'', createdBy: {userId,userName} };
+  meetingRooms[meetingId] = {title:meetingTitle, meetingPassword: meetingPassword,host:[], participants: [],isScreenSharing:false,screenSharer:'', startTime:new Date(Date.now()), endTime:'', createdBy: {userId,userName} };
   roomChats[meetingId] = [];
+  meetingRooms[meetingId].host.push(userId)
   console.log('Room created',meetingId)
   console.log(meetingRooms[meetingId].startTime)
   res.status(200).send({ message: 'Room created' });
@@ -86,7 +87,8 @@ app.get('/meeting/:meetingId/chat', (req, res) => {
 app.get('/meeting/:meetingId/participants', (req, res) => {
   const { meetingId } = req.params;
   const participants = meetingRooms[meetingId].participants || [];
-  res.status(200).json({ participants });
+  const hosts = meetingRooms[meetingId].host || [];
+  res.status(200).json({ participants,hosts });
 });
 
 app.get('/getMeetingInfo/:meetingId', (req, res) => {
@@ -156,7 +158,7 @@ io.on('connection', (socket) => {
 
 
   // Handle room joining
-  socket.on('join-room', ({ meetingId, meetingPassword, userId, userName,colorId,micStatus,videoStatus, isHost}) => {
+  socket.on('join-room', ({ meetingId, meetingPassword, userId, userName,colorId,micStatus,videoStatus}) => {
     console.log(meetingRooms[meetingId])
     console.log('sdfgsdfg')
 
@@ -170,7 +172,7 @@ io.on('connection', (socket) => {
       }
   
       if(room && room.meetingPassword === meetingPassword){
-        room.participants.push({ userId, userName, colorId,micStatus,videoStatus, isHost }); 
+        room.participants.push({ userId, userName, colorId,micStatus,videoStatus }); 
         socket.join(meetingId);
         console.log(room)
         console.log('Participant added successfully!')

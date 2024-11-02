@@ -61,7 +61,8 @@ const HasAuth = ({ children }) => {
 export const userContext = createContext(null)
 
 function App() {
-  const backend = 'http://localhost:5000'
+  const backend = 'https://meetorbit-1.onrender.com'
+  // const backend = 'http://localhost:5000'
   const [userInfo, setUserInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
   const secretKey = 'zoomClone';

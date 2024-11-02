@@ -77,7 +77,7 @@ const DashboardHome = () => {
         navigator.clipboard.writeText(data).then(
           () => {
             setCopied(true);
-            notifySuccess('Meeting Link Copied !!')
+            notifySuccess('Meeting ID Copied !!')
             setTimeout(() => setCopied(false), 3000); 
           },
           (err) => {
