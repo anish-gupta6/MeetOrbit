@@ -37,6 +37,8 @@ const RoomContextPro = ({children}) => {
   const [screenLoading, setScreenLoading] = useState(false);
   const [isConnected,setIsConnected] = useState(false);
   const [isRecording,setIsRecording] = useState(false);
+  const [notConnected,setNotConnected] = useState(false);
+  const [notConnectedPopup,setNotConnectedPopup] = useState(false);
 
 
 
@@ -121,18 +123,17 @@ const RoomContextPro = ({children}) => {
 
 
 
-
-
-
-
   // handle add stream
   const handleAddStream = useCallback((stream,userId,userName,colorId,micStatus,videoStatus) =>{
     setStreams(prevStreams => {
       if (prevStreams.some(stream => stream.userId === userId)) return prevStreams;
         return [...prevStreams, { userId,userName,colorId,micStatus,videoStatus,stream}];
       });
+
       return
   },[])
+  
+  
 
   // handle peer open
   const handlePeerOpen = useCallback((id,stream) =>{
@@ -235,7 +236,7 @@ useEffect(()=>{
   
   useEffect(() => {
     if(userName && colorId){
-      const usrId = userInfo.userId;
+      const usrId = userInfo?userInfo.userId:undefined;
       console.log(usrId)
       const peer = new Peer(usrId,{
         secure:true
@@ -249,6 +250,7 @@ useEffect(()=>{
       console.log(currentStreamRef.current)
       // setCurrentVideoStream(stream);
 
+      console.log(peer)
       peer.on('open', (id) => handlePeerOpen(id,currentStreamRef.current));
 
       socket.on('user-connected', (data) => {
@@ -352,7 +354,7 @@ useEffect(()=>{
       socket.off('mic-status-changed');
     };
   }
-  }, [userName,colorId,meetingId, meetingPassword, socket]);
+  }, [userName,colorId,meetingId,meetingPassword, socket]);
 
 
   useEffect(() => {
@@ -388,7 +390,9 @@ const stopRecording = () =>{
     participants,
     isScreenSharing,
     screenLoading,
-    isRecording
+    isRecording,
+    notConnected,
+    notConnectedPopup
   }
 
   const setRoomStates = {
@@ -406,7 +410,9 @@ const stopRecording = () =>{
     setMeetingId,
     setMeetingPassword,
     setChatHistory,
-    setParticipants
+    setParticipants,
+    setNotConnected,
+    setNotConnectedPopup
   }
 
   const roomHandlers = {

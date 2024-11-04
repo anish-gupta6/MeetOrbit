@@ -46,12 +46,14 @@ const MeetingLobby = () => {
 
   const handleJoinRoom = (e) =>{
     e.preventDefault();
+    
     console.log(isMicOn,isVideoOn)
     if(!userName){
       notifyWarning('Enter you name !!');
       return
     }
-    navigate(`/meeting/room/join/j?id=${roomId}&pwd=${encodeURIComponent(roomPassword)}`,{state:{isMicOn,isVideoOn,userName}});
+    const name = userName.trim();
+    navigate(`/meeting/room/join/j?id=${roomId}&pwd=${encodeURIComponent(roomPassword)}`,{state:{isMicOn,isVideoOn,userName:name}});
   }
 
   return (

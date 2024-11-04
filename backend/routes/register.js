@@ -20,10 +20,9 @@ const generateRandomString = (length) => {
   };
 
   const generateMeetingId =()=>{
-    const length = 10;
-    let meetingId=0;
+    let meetingId='';
     const digits = "0123456789";
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i<10; i++) {
         meetingId += digits[Math.floor(Math.random() * 10)];
     }
     return meetingId;

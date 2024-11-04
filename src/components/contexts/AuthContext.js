@@ -1,4 +1,4 @@
-import React,{createContext,useContext,useState} from 'react'
+import React,{createContext,useContext,useEffect,useState} from 'react'
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import {useNavigate} from 'react-router-dom'
 import CryptoJS from 'crypto-js';
@@ -7,15 +7,42 @@ const UserContext = createContext()
 const AuthContext = ({children}) => {
     // const [profileImg,setProfileImg]=useState('https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png')
     const navigate = useNavigate();
-    const backend = 'https://meetorbit-1.onrender.com'
-    // const backend = 'http://localhost:5000'
+    // const backend = 'https://meetorbit-1.onrender.com'
+    const backend = 'http://localhost:5000'
+
+    const [userInfo, setUserInfo] = useState(null);
+    const secretKey = 'zoomClone';
     
+
+    const getLocalStorageData = () =>{
+        const encryptedData = localStorage.getItem('userData');
+        if (encryptedData) {
+          try {
+            const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+            console.log(bytes)
+            const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+            console.log(decryptedData)
+            const parsedData = JSON.parse(decryptedData);
+            setUserInfo(parsedData);
+          } catch (error) {
+            console.error("Error decrypting user data:", error);
+          }
+        }
+    }
+    useEffect(() => {
+        getLocalStorageData();
+        
+      }, []);
+
 
     const saveUserData = (userData) =>{
         const secretKey = 'zoomClone';
         console.log(userData);
         const encryptedData=CryptoJS.AES.encrypt(JSON.stringify(userData), secretKey).toString();
         localStorage.setItem('userData',encryptedData);
+        setTimeout(()=>{
+            getLocalStorageData();
+          },300)
     }
 
 
@@ -172,7 +199,7 @@ const AuthContext = ({children}) => {
     }
 
   return (
-    <UserContext.Provider value={{ generateOTP , userLogin, userRegister ,handleGoogleAuth, checkUser, userLogOut, resetPassword}}>
+    <UserContext.Provider value={{userInfo, generateOTP , userLogin, userRegister ,handleGoogleAuth, checkUser, userLogOut, resetPassword}}>
             {children}
         </UserContext.Provider>
   )

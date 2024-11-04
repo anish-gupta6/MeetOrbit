@@ -66,7 +66,7 @@ const DashboardHome = () => {
         if(userInfo){
             fetchUserDetails();
         }
-    },[])
+    },[userInfo])
 
     const formatMeetingId = (meetingId) =>{
         const formattedMeetingId =  meetingId.slice(0, 3) + ' '+ meetingId.slice(3, 6) + ' '+ meetingId.slice(6);

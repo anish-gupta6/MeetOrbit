@@ -12,9 +12,10 @@ const VideoGrid = () => {
     const [pinnedStream, setPinnedStream] = useState({});
     const [isPinned, setIsPinned] = useState(false);
     const [screenSharer,setScreenSharer] = useState('')
-    const {roomStates,roomHandlers} = useRoomContext();
-    const {socket,isVisible,streams,isVideoOn,me,isRecording} = roomStates;
+    const {roomStates,roomHandlers,setRoomStates} = useRoomContext();
+    const {socket,isVisible,streams,isVideoOn,me,isRecording,notConnected,notConnectedPopup} = roomStates;
     const {stopRecording} = roomHandlers;
+    const {setNotConnectedPopup,setNotConnected} = setRoomStates;
 
   // Group streams into slides of 4
   const [slides, setSlides] = useState([]);
@@ -69,9 +70,21 @@ const VideoGrid = () => {
         </div>
         <div className="recording-body">
           <div className="recording-error-logo"><PiWarningFill/></div>
-          <div className="recording-desc">Meeting recording is not supported in web version</div>
+          <div className="recording-desc">Meeting recording feature is in development phase!!</div>
         </div>
         <div className="error-okay-btn" onClick={stopRecording}>Okay</div>
+      </div>}
+
+      {notConnected && notConnectedPopup && <div className="recording-error-cntnr">
+        <div className="recording-title-cntnr">
+          <div className="recording-title"><img src={cameraIcon} alt="M" style={{width:'25px',height:'25px'}}/>MeetOrbit</div>
+          <div className="error-close-btn" onClick={()=>setNotConnected(false)}><PiXBold/></div>
+        </div>
+        <div className="recording-body">
+          <div className="recording-error-logo"><PiWarningFill/></div>
+          <div className="recording-desc">Unable to connect. Make sure your internet connection is stable. Try again to reconnect !!</div>
+        </div>
+        <div className="error-okay-btn" onClick={()=>setNotConnected(false)}>Okay</div>
       </div>}
 
       {pinnedStream && isPinned &&(
@@ -104,7 +117,7 @@ const VideoGrid = () => {
                 
                 {(!videoStatus || screenSharer===userId) ?<div className='pinned-grid-video-element'>
                   <div className="pinned-video-poster" style={{backgroundColor:`${colorId}`}}>
-                    {userName?userName.charAt(0):'asdfasd'}
+                    {userName?userName.charAt(0).toUpperCase():'!'}
                   </div>
                   </div>:''}
               <video
@@ -159,7 +172,7 @@ const VideoGrid = () => {
                 
                 {!videoStatus && <div className='peer-video-element'>
                   <div className="video-poster" style={{backgroundColor:`${colorId}`}}>
-                    {userName?userName.charAt(0):'asdfasd'}
+                    {userName?userName.charAt(0).toUpperCase():'!'}
                   </div>
                   </div>}
               <video

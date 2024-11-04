@@ -32,6 +32,7 @@ import NoteEditor from './pages/userNotes/NoteEditor';
 import CryptoJS from 'crypto-js'
 import AppLoader from './components/appLoader/AppLoader';
 import LaunchLobby from './pages/lobby/LaunchLobby';
+import {UserAuth} from './components/contexts/AuthContext'
 
 
 const useAuth = () => {
@@ -61,34 +62,20 @@ const HasAuth = ({ children }) => {
 export const userContext = createContext(null)
 
 function App() {
-  const backend = 'https://meetorbit-1.onrender.com'
-  // const backend = 'http://localhost:5000'
-  const [userInfo, setUserInfo] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
-  const secretKey = 'zoomClone';
+  // const backend = 'https://meetorbit-1.onrender.com'
+  const backend = 'http://localhost:5000';
+  const [isLoading, setIsLoading] = useState(true); 
+  const {userInfo} = UserAuth();
 
   useEffect(() => {
-    const encryptedData = localStorage.getItem('userData');
-    if (encryptedData) {
-      try {
-        const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
-        console.log(bytes)
-        const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
-        console.log(decryptedData)
-        const parsedData = JSON.parse(decryptedData);
-        setUserInfo(parsedData);
-      } catch (error) {
-        console.error("Error decrypting user data:", error);
-      }
-    }
     setTimeout(()=>{
       setIsLoading(false);
     },1200)
-      // setIsLoading(false);
   }, []);
 
+
   if (isLoading) {
-    return <AppLoader/>; // Render a loading state
+    return <AppLoader/>; 
   }
 
   return (

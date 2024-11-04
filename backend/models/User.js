@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
 
 // meeting schema
 const recentMeetingSchema = new mongoose.Schema({
+    activityId:{type: String,required: true,unique:true},
     title: {type: String,required: true},
     startTime: {type: Date,required: true},
     endTime: {type: Date,required: true},

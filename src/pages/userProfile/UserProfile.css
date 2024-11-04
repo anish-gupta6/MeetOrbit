@@ -179,7 +179,12 @@
 }
 .column-2{
     width: 70%;
+    word-break: break-all;
     color:#777;
+}
+.column-link:hover{
+    cursor: pointer;
+    text-decoration: underline;
 }
 .user-profile-meeting-details-wrapper{
     gap: 0;

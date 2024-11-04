@@ -1,12 +1,10 @@
 import React, { useState,useEffect } from 'react'
 import { ImPhoneHangUp,ImExit  } from 'react-icons/im'
-import { PiShieldCheckFill,PiSignOutBold ,PiPhoneXFill, PiRecordFill, PiStopCircleBold } from 'react-icons/pi'
+import { PiShieldCheckFill,PiSignOutBold ,PiPhoneXFill, PiRecordFill, PiStopCircleBold, PiShareNetworkFill, PiInfoFill } from 'react-icons/pi'
 import { TbWindowMinimize } from 'react-icons/tb'
 import {useRoomContext} from '../contexts/RoomContextPro'
-import { BsDoorOpenFill } from "react-icons/bs";
-import { BiSolidDoorOpen } from "react-icons/bi";
-import { useLocation } from 'react-router-dom'
 import {useToast} from '../../ToastService'
+import CryptoJS from 'crypto-js'
 
 const RoomTopBar = () => {
 
@@ -17,14 +15,16 @@ const RoomTopBar = () => {
     const {me,meetingId,isVisible,isChatOpen,isParticipantOpen,meetingDetails,isRecording} = roomStates;
     const [isMeetingEndActive,setIsMeetingEndActive] = useState(false);
     const [isMeetingInfo,setIsMeetingInfo] = useState(false);
+    const [meetingPassword,setMeetingPassword] = useState('');
     
 
-    const queryParams = new URLSearchParams(useLocation().search);
-    const meetingPassword = queryParams.get('pwd');
-
-    // const handleMeetingEndDropdown = () =>{
-    //   setIsMeetingEndActive((prev)=>!prev)
-    // }
+    useEffect(()=>{
+      if(meetingDetails){
+        const secretKey = 'zoomClone'
+        const encMeetingPassword = CryptoJS.AES.encrypt(meetingDetails.meetingPassword, secretKey).toString();
+        setMeetingPassword(encMeetingPassword)
+      }
+    },[meetingDetails])
 
     useEffect(() => {
       const handleOutsideClick = (event) => {
@@ -63,20 +63,20 @@ const RoomTopBar = () => {
   return (
     <div>
       <div className={`top-bar-main-container ${isVisible || isMeetingInfo || isChatOpen || isParticipantOpen? 'visible' : 'hidden'}`}>
-          <div className="top-bar-logo-cntnr">
+          <div className="top-bar-logo-cntnr" onClick={()=>console.log(meetingDetails)}>
             <span className="logo-1">MeetOrbit</span>
             <span className="logo-2">Meetings</span>
           </div>
 
           <div className="top-bar-option-cntnr">
             <div className="meeting-info-icon top-options"  onClick={()=>setIsMeetingInfo((prev)=>!prev)}>
-              <div className="top-icon" title='meeting info'><PiShieldCheckFill /></div>
+              <div className="top-icon" title='meeting info'><PiInfoFill style={{fontSize:'22px',color:'#03fc5e',marginRight:'6px'}}/> Info</div>
               {isMeetingInfo && <div className={`meeting-info-dropdown-cntnr ${isMeetingInfo ? 'info-active' : ''}`} onClick={(e) => e.stopPropagation()}>
                 <div className="meeting-info-header">{meetingDetails.title}</div>
                 <div className="meeting-info-content-cntnr">
                   <div className="meeting-info-row">
                     <div className="meeting-info-row-title">Host</div>
-                    <div className="meeting-info-row-content">{meetingDetails.createdBy?.userName || 'not'}</div>
+                    <div className="meeting-info-row-content name-content">{meetingDetails.createdBy?.userName || 'not'}</div>
                   </div>
                   <div className="meeting-info-row">
                     <div className="meeting-info-row-title">Meeting ID</div>
@@ -91,6 +91,9 @@ const RoomTopBar = () => {
                     <div className="meeting-info-row-content" onClick={()=>handleCopy(`http://localhost:3000/meeting/room/wr?id=${meetingId}&pwd=${encodeURIComponent(meetingPassword)}`)}>
                       {`http://localhost:3000/meeting/room/wr?id=${meetingId}&pwd=${encodeURIComponent(meetingPassword)}`}</div>
                   </div>
+
+                    <div className="meeting-info-row-desc"><PiShareNetworkFill style={{fontSize:'20px'}}/> Click the details to copy</div>
+
                 </div>
               </div>}
             </div>

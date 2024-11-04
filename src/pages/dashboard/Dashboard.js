@@ -21,8 +21,6 @@ const Dashboard = () => {
     const {userInfo} = useContext(userContext);
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const [navId, setNavId] = useState('');
-    const [userName, setUserName] = useState('');
     const [profileImg, setProfileImg] = useState('');
     const [activeLink, setActiveLink] = useState('');
     const [isMobileSearchOpen,setIsMobileSearchOpen]=useState(false)
@@ -46,19 +44,14 @@ const Dashboard = () => {
         isSidebarOpen === true ? setSidebarOpen(false) : setSidebarOpen(true);
     }
     useEffect(()=>{
-        // const secretKey = "zoomClone"
-        // const userInfo = localStorage.getItem('userData');
         if(userInfo){
-            // const bytes = CryptoJS.AES.decrypt(userInfo, secretKey);
-            // const userData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-            setUserName(userInfo.userName)
             setProfileImg(userInfo.profileImg)
         }
         
-    },[userInfo]);
+    },[userInfo,location]);
 
     const handleViewProfile=()=>{
-        navigate(`/home/profile/${navId}`)
+        navigate(`/home/profile`)
     }
     useEffect(() => {
         const handleOutsideClick = (event) => {
