@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useLocation } from 'react-router-dom';
 import './Room.css';
 import { useRoomContext } from '../../components/contexts/RoomContextPro';
@@ -21,9 +21,9 @@ const Room = () => {
   const { userInfo,isMicOn,isVideoOn,userName } = location.state;
 
   const {roomStates,setRoomStates} = useRoomContext();
-  const {me,isHovered,isChatOpen,isParticipantOpen} = roomStates;
-  const {setIsMicOn,setIsVideoOn,setIsHovered,setIsVisible,setMeetingDetails,setColorId,setUserInfo,setUserName,setMeetingId,setMeetingPassword} = setRoomStates;
-
+  const {me,isHovered,isChatOpen,isParticipantOpen,hosts} = roomStates;
+  const {setIsMicOn,setIsVideoOn,setIsHovered,setIsVisible,setMeetingDetails,setColorId,setUserInfo,setUserName,setMeetingId,setMeetingPassword,setHosts} = setRoomStates;
+  // const [isLoading,setIsLoading] = useState(true);
   
   
   const getColorId = () =>{
@@ -85,6 +85,11 @@ const Room = () => {
         const data = await response.json();
         console.log(data.meetingInfo)
         setMeetingDetails(data.meetingInfo)
+        const res = data.meetingInfo
+        setHosts(res.host)
+        // setTimeout(()=>{
+        //   setIsLoading(false)
+        // },3000)
       }
     }catch(err){
       console.log(err)
@@ -97,6 +102,7 @@ const Room = () => {
   return (
     
     <div>
+      {/* {isLoading?<><div className="middleware-loader"></div><div className="middleware-loading-caption"></div></>:<> */}
       <div className="zoom-container" onMouseMove={handleMouseMove}>
 
         <div className="room-top-bar"><RoomTopBar/></div>
@@ -109,6 +115,7 @@ const Room = () => {
 
       <div className={`chatBox ${isChatOpen ? 'open' : ''}`}><ChatBox/></div>
       <div className={`participantBox ${isParticipantOpen ? 'open' : ''}`}><ParticipantBox/></div>
+    {/* </>} */}
     </div>
   );
 };

@@ -9,7 +9,7 @@
     flex-direction: row;
     /* justify-content: center; */
     align-items: center;
-    flex-wrap: wrap-reverse;
+    /* flex-wrap: wrap-reverse; */
     width: 90%;
     height: 100vh;
     padding: 20px;
@@ -46,7 +46,13 @@
 }
 
 .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 20px;
+    
 }
 
 .btn-primary, .btn-secondary {
@@ -57,6 +63,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-right: 10px;
+    text-decoration: none;
 }
 
 .btn-primary {

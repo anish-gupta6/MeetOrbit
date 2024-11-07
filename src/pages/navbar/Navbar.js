@@ -16,8 +16,8 @@ const Navbar = () => {
 
       <div className="upper-nav-auth-container">
         <div className="upper-nav-auth-btn-cntnr">
-        <Link to="/" className="upper-nav-join-host"><span>Join</span></Link>
-        <Link to="/" className="upper-nav-join-host"><span>Host</span></Link>
+        <Link to="/join-meeting" className="upper-nav-join-host"><span>Join</span></Link>
+        <Link to="/signin" className="upper-nav-join-host"><span>Host</span></Link>
           <span className="border-right-icon">|</span>
           <Link to="/signin" className="upper-nav-auth-signIn-btn upper-nav-auth-btn"><span>Sign In</span></Link>
         </div>

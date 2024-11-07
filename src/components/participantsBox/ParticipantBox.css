@@ -94,9 +94,47 @@
 }
 .media-status{
     font-size: 20px;
-    /* color: rgba(251, 128, 107, 0.862); */
+    /* cursor: pointer; */
+}
+.participant-option-wrapper{
+    position: relative;
+}
+.participant-option-dropdown-cntnr{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    position: absolute;
+    transform: scale(0);
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    right: 0;
+    top: 30px;
+    width: 90px;
+    padding: 5px 6px;
+    transform-origin: top right;
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+.participant-option-dropdown-cntnr.active{
+    transform: scale(1);
+}
+.option-icon{
     cursor: pointer;
 }
+.participant-option{
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.green-opt{
+    color: var(--primary_color);
+}
+.red-opt{
+    color: tomato;
+}
+
+
 
 @media screen and (max-width:520px) {
     .participantbox-main-container{

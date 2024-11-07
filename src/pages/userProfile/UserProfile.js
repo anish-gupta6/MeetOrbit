@@ -26,7 +26,10 @@ const UserProfile = () => {
   useEffect(()=>{
     const fetchUserDetails = async () =>{
         try{
-        const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`)
+        const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`,{
+          method:'GET',
+          mode:'cors',
+      })
         if(response.ok){
             const data = await response.json();
             setUserDetail(data.userData)

@@ -113,19 +113,17 @@
   color: white;
   width: clamp(350px,32vw,45vw);
   top: 40px;
-  right: -150px;
+  right: -180px;
   font-size: 14px;
   padding: 20px;
   border-radius: 6px;
   transform: scale(0);
-  opacity: 0;
   transform-origin: top center;
   z-index: 10;
   border: 1px solid #333;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:transform 0.3s ease;
 }
 .meeting-info-dropdown-cntnr.info-active{
-  opacity: 1;
   transform: scale(1);
 }
 .meeting-info-header{
@@ -204,6 +202,9 @@
 }
 .meeting-end-option:hover{
   opacity: 0.8;
+}
+.meeting-end-option.disabled{
+  opacity: 0.2;
 }
 .end-option-icon{
   font-size: 18px;

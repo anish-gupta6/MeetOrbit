@@ -73,7 +73,7 @@ const SignIn = () => {
       <div className="login-page-main-container" style={{marginTop:'100px'}}>
       <div className="login-page-heading" ><h1>Welcome back ! ! !</h1></div>
           <div className="login-svg-form-cntnr">
-        <div className="signin-svg-cntnr"><SignInSVG style={{width:'480px'}}/></div>
+        <div className="signin-svg-cntnr"><SignInSVG /></div>
 
         <div className='login-page-form-cntnr'>
             

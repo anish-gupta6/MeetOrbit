@@ -8,7 +8,8 @@ const AuthContext = ({children}) => {
     // const [profileImg,setProfileImg]=useState('https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png')
     const navigate = useNavigate();
     // const backend = 'https://meetorbit-1.onrender.com'
-    const backend = 'http://localhost:5000'
+    // const backend = 'https://meetorbit.gdscbiher.in.net'
+    const backend = 'http://localhost:5000';
 
     const [userInfo, setUserInfo] = useState(null);
     const secretKey = 'zoomClone';
@@ -59,6 +60,7 @@ const AuthContext = ({children}) => {
             console.log('here')
             const response = await fetch(`${backend}/api/auth/login`,{
                 method: 'POST',
+                mode:'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -84,6 +86,7 @@ const AuthContext = ({children}) => {
         try{
             const response = await fetch(`${backend}/api/auth/register`,{
                 method: 'POST',
+                mode:'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -106,6 +109,7 @@ const AuthContext = ({children}) => {
         try{
             const response = await fetch(`${backend}/api/auth/generateOTP`,{
                 method: 'POST',
+                mode:'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -164,6 +168,7 @@ const AuthContext = ({children}) => {
         try{
             const response = await fetch(`${backend}/api/auth/checkUser`,{
                 method: 'POST',
+                mode:'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -183,6 +188,7 @@ const AuthContext = ({children}) => {
         try{
             const response = await fetch(`${backend}/api/auth/resetPassword`,{
                 method: 'POST',
+                mode:'cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },

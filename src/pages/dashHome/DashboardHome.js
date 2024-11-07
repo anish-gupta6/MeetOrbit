@@ -48,7 +48,10 @@ const DashboardHome = () => {
         const fetchUserDetails = async () =>{
             try{
                 
-            const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`)
+            const response = await fetch(`${backend}/api/auth/getUser/${userInfo.userId}`,{
+                method:'GET',
+                mode:'cors',
+            })
             if(response.ok){
                 const data = await response.json();
                 // console.log(data.userData)
@@ -96,6 +99,7 @@ const DashboardHome = () => {
         navigate(`/meeting/room/launch?id=${meetingId}&pwd=${encodeURIComponent(encMeetingPassword)}`);
       }
 
+      
       
 
 
@@ -177,7 +181,7 @@ const DashboardHome = () => {
             ):(
             <div className="dashboard-home-user-activity-cntnr">
                 <div className="user-activity-header-cntnr">Your Activity</div>
-                {recentMeetings.length>0 ? <div className="user-activity-items-cntnr"><RecentActivity recentActivity={recentMeetings}/></div>
+                {recentMeetings.length>0 ? <div className="user-activity-items-cntnr"><RecentActivity recentActivity={recentMeetings} setRecentMeetings={setRecentMeetings}/></div>
                 :<div className="user-activity-items-cntnr"><div className="no-activity">No Recent Activities</div></div>}
             </div>)}
 
@@ -243,7 +247,7 @@ const DashboardHome = () => {
                 <div className="plan-feature-header-cntnr">Do more with MeetOrbit Pro Subscription</div>
                 
                 <div className="plan-feature-items-cntnr">
-                    <div className="plan-feature-items"><div className="plan-feature-item-icon"><PiSealCheckFill/></div>No 40-minute limit</div>
+                    <div className="plan-feature-items"><div className="plan-feature-item-icon"><PiSealCheckFill/></div>No 25-minute limit</div>
                     <div className="plan-feature-items"><div className="plan-feature-item-icon"><PiSealCheckFill/></div>Unlimited number of meetings</div>
                     <div className="plan-feature-items"><div className="plan-feature-item-icon"><PiSealCheckFill/></div>More customizations for meetings</div>
                     <div className="plan-feature-items"><div className="plan-feature-item-icon"><PiSealCheckFill/></div>Exclusive access to whiteboards <StarSVG/></div>

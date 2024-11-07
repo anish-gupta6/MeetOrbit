@@ -11,6 +11,7 @@ const saveNote = require('./routes/saveNote')
 const getNotes = require('./routes/getNotes')
 const updateNoteStatus = require('./routes/updateNoteStatus')
 const deleteNote = require('./routes/deleteNote')
+const deleteActivity = require('./routes/deleteActivity')
 const cors = require('cors');
 
 const http = require('http');
@@ -43,6 +44,7 @@ app.use('/api/auth', checkUserRoute);
 app.use('/api/auth', loginRoute);
 app.use('/api/auth', resetPassword);
 app.use('/api/auth', getUserDetail);
+app.use('/api/auth', deleteActivity);
 app.use('/api/note', saveNote);
 app.use('/api/note', getNotes);
 app.use('/api/note', updateNoteStatus);
@@ -112,6 +114,13 @@ app.get('/meeting/:meetingId/participants', (req, res) => {
   const participants = meetingRooms[meetingId].participants || [];
   const hosts = meetingRooms[meetingId].host || [];
   res.status(200).json({ participants,hosts });
+});
+
+// Route to fetch meeting participants
+app.get('/meeting/:meetingId/hosts', (req, res) => {
+  const { meetingId } = req.params;
+  const hosts = meetingRooms[meetingId].host || [];
+  res.status(200).json({hosts });
 });
 
 // Route to fetch meeting information
@@ -294,6 +303,14 @@ io.on('connection', (socket) => {
     console.log(`Message sent to room ${meetingId} from ${userName}: ${message}`);
   });
 
+  socket.on('make-host',({meetingId,userId})=>{
+    const list = meetingRooms[meetingId].host;
+    if(list){
+      list.push(userId)
+    }
+    io.to(meetingId).emit('host-changed');
+  })
+
     // Handle disconnection
     socket.on('disconnect', async () => {
       try {
@@ -324,6 +341,8 @@ io.on('connection', (socket) => {
       if(room && room.participants.some(participant => participant.userId === userId)){
         delete meetingRooms[meetingId];
         console.log(meetingRooms)
+        const endTime = new Date(Date.now())
+        saveMeeting(room,meetingId,endTime);
         io.to(meetingId).emit('meeting-ended');
       }
     })

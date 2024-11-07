@@ -1,7 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { HiOutlineTrash } from 'react-icons/hi'
+import {userContext} from '../../App'
+import {useToast} from '../../ToastService'
+import {UserAuth} from '../../components/contexts/AuthContext'
 
-const RecentActivity = ({recentActivity}) => {
+const RecentActivity = ({recentActivity,setRecentMeetings}) => {
+  const {backend} = useContext(userContext);
+  const {notifySuccess,notifyError} = useToast();
+  const {userInfo} = UserAuth();
+
 
   const convertTime = (seconds) =>{
     if (seconds < 60) {
@@ -18,6 +25,25 @@ const RecentActivity = ({recentActivity}) => {
       return `${hours}hr${hours !== 1 ? 's' : ''}${remainingMinutes > 0 ? ` ${remainingMinutes}min${remainingMinutes !== 1 ? 's' : ''}` : ''}${remainingSeconds > 0 ? ` ${remainingSeconds}s` : ''}`;
     }
   }
+
+  const deleteActivity = async (activityId) =>{
+    try{
+      const userId = userInfo.userId;
+      const response = await fetch(`${backend}/api/auth/deleteActivity/${userId}/${activityId}`,{
+        method:'DELETE'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRecentMeetings(recentActivity.filter((activity) => activity.activityId !== activityId));
+        notifySuccess('Recent Meeting Removed !!')
+      } else {
+        notifyError('Failed to delete !!');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div>
       <div className="recent-activity-wrapper">
@@ -31,7 +57,8 @@ const RecentActivity = ({recentActivity}) => {
                 </div>
             </div>
             {/* <div className="recent-activity-option-wrapper"> */}
-              <div className="recent-activity-option-icon"><HiOutlineTrash/></div>
+              <div className="recent-activity-option-icon" onClick={()=>deleteActivity(activity.activityId)}><HiOutlineTrash/></div>
+              {/* <div className="recent-activity-option-icon"><HiOutlineTrash/></div> */}
               {/* <div className="recent-option">
                 <div className="recent-option-item"></div>
               </div> */}

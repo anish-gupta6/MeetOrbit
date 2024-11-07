@@ -7,11 +7,11 @@ router.get('/getUser/:userId', async (req, res) => {
     console.log(userId)
 
     const user = await User.findOne({ userId });
-    console.log(user)
+    // console.log(user)
     if(user){
         const meetingInfo = await MeetingDetails.findOne({userId});
         const userData = { ...user.toObject(), ...meetingInfo.toObject() };
-        console.log(userData)
+        // console.log(userData)
         return res.status(200).send({ message: 'user found', success: true, userData });
     } else {
         return res.status(404).send({ message: 'user not found', success: false });

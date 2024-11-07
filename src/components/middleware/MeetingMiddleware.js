@@ -93,7 +93,7 @@ const MeetingMiddleware = () => {
 
   return (
     <div className='middleware-main-wrapper'>
-      {isLoading?<><div className="middleware-loader"></div><div className="middleware-loading-caption"></div></>:''}
+      {isLoading?<><div className="middleware-loader"></div><div className="middleware-loading-caption">Joining, Wait a while ...</div></>:''}
       {/* <div className="middleware-loader"></div> */}
       
     </div>

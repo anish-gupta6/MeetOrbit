@@ -39,6 +39,8 @@ const RoomContextPro = ({children}) => {
   const [isRecording,setIsRecording] = useState(false);
   const [notConnected,setNotConnected] = useState(false);
   const [notConnectedPopup,setNotConnectedPopup] = useState(false);
+  const [hosts,setHosts] = useState([]);
+  const [isHost,setIsHost] = useState(false);
 
 
 
@@ -81,10 +83,20 @@ const RoomContextPro = ({children}) => {
   };
 
   const handleMeetingEnd = () =>{
+    if(!isHost){
+      notifyError('End option for Host only !!');
+      return
+    }
     console.log('123')
     socket.emit('end-meeting',{meetingId,userId:me});
   }
 
+  useEffect(()=>{
+    if(meetingDetails && hosts && me){
+      const result = hosts.includes(me);
+      setIsHost(result)
+    }
+  },[meetingDetails,hosts,me])
   
   // const stopMediaAndNavigate = (path) => {
   //   if (mediaStreamRef.current) {
@@ -306,12 +318,14 @@ useEffect(()=>{
       
       socket.off('meeting-ended');
       socket.on('meeting-ended',()=>{
+        // socket.disconnect();
         notifyError('Meeting Ended !!');
         const mediaStopped = stopMedia();
         if(mediaStopped){
           navigate('/')
         }
       });
+      
 
       socket.on('video-status-changed', ({ userId, videoStatus }) => {
         setStreams(prevStreams =>
@@ -392,7 +406,9 @@ const stopRecording = () =>{
     screenLoading,
     isRecording,
     notConnected,
-    notConnectedPopup
+    notConnectedPopup,
+    hosts,
+    isHost
   }
 
   const setRoomStates = {
@@ -412,7 +428,9 @@ const stopRecording = () =>{
     setChatHistory,
     setParticipants,
     setNotConnected,
-    setNotConnectedPopup
+    setNotConnectedPopup,
+    setHosts,
+    setIsHost
   }
 
   const roomHandlers = {

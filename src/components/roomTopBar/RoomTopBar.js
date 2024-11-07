@@ -10,12 +10,16 @@ const RoomTopBar = () => {
 
   const {notifySuccess,notifyError} = useToast();
 
-    const {roomStates,roomHandlers} = useRoomContext();
+    const {roomStates,setRoomStates,roomHandlers} = useRoomContext();
     const {handleMeetingEnd,handleLeaveMeeting,startRecording} = roomHandlers;
-    const {me,meetingId,isVisible,isChatOpen,isParticipantOpen,meetingDetails,isRecording} = roomStates;
+    const {me,meetingId,isVisible,isChatOpen,isParticipantOpen,meetingDetails,isRecording,isHost} = roomStates;
+    const {setIsHost} = setRoomStates;
     const [isMeetingEndActive,setIsMeetingEndActive] = useState(false);
     const [isMeetingInfo,setIsMeetingInfo] = useState(false);
     const [meetingPassword,setMeetingPassword] = useState('');
+    // const [hosts,setHosts] = useState([]);
+    // const [isHost,setIsHost] = useState(false);
+
     
 
     useEffect(()=>{
@@ -60,6 +64,16 @@ const RoomTopBar = () => {
       return formattedMeetingId
   }
 
+  // useEffect(()=>{
+  //   if(meetingDetails){
+  //     setHosts(meetingDetails.host)
+  //   }
+  //   if(hosts && hosts.includes(me)){
+  //     setIsHost(true)
+  //   }
+  //   console.log(hosts?hosts.includes(me):'')
+  // },[meetingDetails])
+
   return (
     <div>
       <div className={`top-bar-main-container ${isVisible || isMeetingInfo || isChatOpen || isParticipantOpen? 'visible' : 'hidden'}`}>
@@ -71,7 +85,7 @@ const RoomTopBar = () => {
           <div className="top-bar-option-cntnr">
             <div className="meeting-info-icon top-options"  onClick={()=>setIsMeetingInfo((prev)=>!prev)}>
               <div className="top-icon" title='meeting info'><PiInfoFill style={{fontSize:'22px',color:'#03fc5e',marginRight:'6px'}}/> Info</div>
-              {isMeetingInfo && <div className={`meeting-info-dropdown-cntnr ${isMeetingInfo ? 'info-active' : ''}`} onClick={(e) => e.stopPropagation()}>
+              {<div className={`meeting-info-dropdown-cntnr ${isMeetingInfo ? 'info-active' : ''}`} onClick={(e) => e.stopPropagation()}>
                 <div className="meeting-info-header">{meetingDetails.title}</div>
                 <div className="meeting-info-content-cntnr">
                   <div className="meeting-info-row">
@@ -102,7 +116,8 @@ const RoomTopBar = () => {
             <div className="meeting-end-icon top-options" onClick={()=>setIsMeetingEndActive((prev)=>!prev)}><div className="top-icon"><ImPhoneHangUp /></div>
               <div className={`meeting-end-dropdown-cntnr ${isMeetingEndActive?'end-active':''}`} onClick={(e) => e.stopPropagation()}>
                 <div className="meeting-leave-option meeting-end-option" onClick={handleLeaveMeeting}>Leave Meeting <div className="end-option-icon"><PiSignOutBold /></div></div>
-                <div className="meeting-all-end-option meeting-end-option" onClick={handleMeetingEnd}>End for All <div className="end-option-icon"><PiPhoneXFill /></div></div>
+                {/* <button className="meeting-all-end-option meeting-end-option" onClick={handleMeetingEnd} disabled={!isHost}>End for All <div className="end-option-icon"><PiPhoneXFill /></div></button> */}
+                <div className={`meeting-all-end-option meeting-end-option ${!isHost ? 'disabled':''}`} onClick={handleMeetingEnd} >End for All <div className="end-option-icon"><PiPhoneXFill /></div></div>
               </div>
             </div>
           </div>
